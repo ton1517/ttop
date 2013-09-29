@@ -3,12 +3,27 @@
 
 """
 ttop
+ttop is CUI graphical system monitor.
+
+Usage:
+  ttop [--no-color]
+  ttop -h | --help
+  ttop -v | --version
+
+Options:
+  -h --help           show help.
+  -v --version        show version.
+  -C --no-color       use monocolor.
 """
+
+from . import __author__, __version__, __license__
+from . import __doc__ as __description__
 
 import sys
 import curses
 from multiprocessing import Process
 
+from docopt import docopt
 import psutil
 from hurry.filesize import size
 
@@ -362,6 +377,7 @@ def hook_curses(scr):
     wait_key_and_exit(scr)
 
 def main():
+    arguments = docopt(__doc__, version=__version__)
     curses.wrapper(hook_curses)
 
 if __name__ == "__main__":
