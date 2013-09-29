@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-ttop
 ttop is CUI graphical system monitor.
 
 Usage:
-  ttop [--no-color]
+  ttop [--no-color] [--interval <s>]
   ttop -h | --help
   ttop -v | --version
 
@@ -14,6 +13,7 @@ Options:
   -h --help           show help.
   -v --version        show version.
   -C --no-color       use monocolor.
+  -i --interval <s>   refresh interval(second) [default: 1].
 """
 
 from . import __author__, __version__, __license__
@@ -31,7 +31,6 @@ from hurry.filesize import size
 # Config
 #=======================================
 
-interval = 1 
 EXIT_KEYS = (ord("q"), ord("Q"), 27) # 27:ESC
 
 #=======================================
@@ -343,20 +342,23 @@ def init_curses():
     """must be called in hook_curses function."""
 
     ## use terminal color.
-    curses.use_default_colors()
+    if curses.has_colors():
+        curses.use_default_colors()
     ## hide cursor
     curses.curs_set(0)
 
-def start_process(scr):
-    p = Process(target=update_handler, args=(scr, ))
+def start_process(scr, arguments):
+    p = Process(target=update_handler, args=(scr, arguments))
     p.daemon = True
     p.start()
 
-def update_handler(scr):
+def update_handler(scr, arguments):
     ss = SystemStatus()
     color_table = ColorTable()
-    theme = DefaultColorTheme(color_table)
+    theme = MonoColorTheme(color_table) if arguments["--no-color"] else DefaultColorTheme(color_table)
     layout = HorizontalDefaultLayout(scr, theme, ss)
+
+    interval = float(arguments["--interval"])
 
     while True:
         ss.update(interval)
@@ -371,14 +373,14 @@ def wait_key_and_exit(scr):
         if c in EXIT_KEYS:
             sys.exit()
 
-def hook_curses(scr):
+def hook_curses(scr, arguments):
     init_curses()
-    start_process(scr)
+    start_process(scr, arguments)
     wait_key_and_exit(scr)
 
 def main():
     arguments = docopt(__doc__, version=__version__)
-    curses.wrapper(hook_curses)
+    curses.wrapper(hook_curses, arguments)
 
 if __name__ == "__main__":
     main()
