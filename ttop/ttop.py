@@ -3,6 +3,7 @@
 
 """
 ttop is CUI graphical system monitor.
+this tools is designed for use with tmux(or screen).
 
 Usage:
   ttop [--no-color] [--interval <s>]
@@ -71,6 +72,8 @@ class ColorTable(object):
 #--------------------
 
 class MonoColorTheme(object):
+    """define monocolor theme."""
+
     def __init__(self, color):
         self.color= color
 
@@ -100,9 +103,8 @@ class DefaultColorTheme(MonoColorTheme):
 
         self.MEM_GAUGE_USED = color.GREEN
 
-
 #=======================================
-# Views
+# View components
 #=======================================
 
 #--------------------
@@ -110,6 +112,10 @@ class DefaultColorTheme(MonoColorTheme):
 #--------------------
 
 class HorizontalLineGauge(object):
+    """horizontal 1 line gauge.
+    example:
+        CPU [||||||||||       50%]
+    """
 
     GAUGE_LEFT = "["
     GAUGE_RIGHT = "]"
@@ -136,6 +142,10 @@ class HorizontalLineGauge(object):
     def _draw_resource(self, y, x, width):
         pass
 
+#--------------------
+# CPUHorizontalLineGauge
+#--------------------
+
 class CPUHorizontalLineGauge(HorizontalLineGauge):
 
     def _draw_resource(self, y, x, width):
@@ -149,6 +159,10 @@ class CPUHorizontalLineGauge(HorizontalLineGauge):
         per = str(self.resource.usedPercent)
         start_x = x + width - len(per)
         self.scr.addstr(y, start_x, per, self.color_theme.PERCENT)
+
+#--------------------
+# MemoryHorizontalLineGauge
+#--------------------
 
 class MemoryHorizontalLineGauge(HorizontalLineGauge):
 
@@ -166,6 +180,10 @@ class MemoryHorizontalLineGauge(HorizontalLineGauge):
 # Layout
 #=======================================
 
+#--------------------
+# Layout
+#--------------------
+
 class Layout(object):
 
     def __init__(self, scr, color_theme, system_status):
@@ -181,6 +199,10 @@ class Layout(object):
     def draw(self):
         pass
 
+#--------------------
+# HorizontalMinimalLayout
+#--------------------
+
 class HorizontalMinimalLayout(Layout):
 
     def _init(self):
@@ -192,6 +214,10 @@ class HorizontalMinimalLayout(Layout):
         center = int(width/2)
         self.cpu.draw(0, 0, center)
         self.memory.draw(0, center, center)
+
+#--------------------
+# HorizontalDefaultLayout
+#--------------------
 
 class HorizontalDefaultLayout(Layout):
 
@@ -215,7 +241,6 @@ class HorizontalDefaultLayout(Layout):
         y = int(len(self.each_cpu)/2)+1
         self.memory.draw(y, 0, width)
         self.swap.draw(y+1, 0, width)
-
 
 #=======================================
 # Core Classes
