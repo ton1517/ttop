@@ -235,3 +235,31 @@ class VerticalMinimalLayout(Layout):
         self.cpu.draw(0, 0, center)
         self.memory.draw(center, 0, center)
 
+#--------------------
+# VerticalDefaultLayout
+#--------------------
+
+class VerticalDefaultLayout(Layout):
+
+    def _init(self):
+        self.cpu = CPUVerticalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
+        self.each_cpu = [CPUVerticalLineGauge(self.scr, self.color_theme, str(i+1), cpu) for i, cpu in enumerate(self.system_status.each_cpu)]
+        self.memory = MemoryVerticalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
+        self.swap = MemoryVerticalLineGauge(self.scr, self.color_theme, "SWP", self.system_status.swap)
+
+    def draw(self):
+        (height, width) = self.scr.getmaxyx()
+        gauge_w = self.cpu.width
+        center = int(height/2)
+
+        self.cpu.draw(0, 0, height)
+
+        for i, cpu in enumerate(self.each_cpu):
+            y, x =  (0 if i%2 == 0  else center, (int(i/2)+1)*gauge_w)
+            h = center if i%2 == 0 else height-center
+            cpu.draw(y, x, h)
+
+        x = (int(len(self.each_cpu)/2)+1)*gauge_w
+        self.memory.draw(0, x, height)
+        self.swap.draw(0, x+gauge_w, height)
+
