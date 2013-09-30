@@ -73,6 +73,86 @@ class MemoryHorizontalLineGauge(HorizontalLineGauge):
         start_x = x + width - len(text)
         self.scr.addstr(y, start_x, text, self.color_theme.PERCENT)
 
+#--------------------
+# VerticalLineGauge
+#--------------------
+
+class VerticalLineGauge(object):
+
+    GAUGE_TOP = "/=\\"
+    GAUGE_BOTTOM = "\\=/"
+    GAUGE = "|=|"
+    GAUGE_BLANK = "   "
+
+    def __init__(self, scr, color_theme, label, resource):
+        self.scr = scr
+        self.color_theme = color_theme
+        self.label = label
+        self.resource = resource
+        self.width = 3
+
+    def draw(self, y, x, height):
+        llabel = self.label[:self.width].center(self.width)
+        self.scr.addstr(y, x, llabel, self.color_theme.LABEL)
+        self.scr.addstr(y+1, x, self.GAUGE_TOP, self.color_theme.FRAME)
+
+        height_resource = height - 3
+        self._draw_resource(y+2, x, height_resource)
+
+        self.scr.addstr(y + height-1, x, self.GAUGE_BOTTOM, self.color_theme.FRAME)
+
+    def _draw_resource(self, y, x, height):
+        pass
+
+#--------------------
+# CPUVerticalLineGauge
+#--------------------
+
+class CPUVerticalLineGauge(VerticalLineGauge):
+
+    def _draw_resource(self, y, x, height):
+        user_n = int(round(self.resource.userPercent* height))
+        system_n = int(round(self.resource.systemPercent * height))
+
+        for i in range(height-(user_n+system_n)):
+            self.scr.addstr(y + i, x, self.GAUGE_BLANK)
+
+        now_y = self.scr.getyx()[0] + 1
+        for i in range(system_n):
+            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_SYSTEM)
+
+        now_y = self.scr.getyx()[0] + 1
+        for i in range(user_n):
+            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_USER)
+
+        last_y = self.scr.getyx()[0] + 1
+
+        per = str(self.resource.usedPercent)[:self.width].rjust(self.width)
+        self.scr.addstr(y, x, per, self.color_theme.PERCENT)
+
+        self.scr.move(y+height, x)
+
+#--------------------
+# MemoryVerticalLineGauge
+#--------------------
+
+class MemoryVerticalLineGauge(VerticalLineGauge):
+
+    def _draw_resource(self, y, x, height):
+        used_n = int(round(self.resource.percent * height))
+
+        for i in range(height-used_n):
+            self.scr.addstr(y + i, x, self.GAUGE_BLANK)
+
+        now_y = self.scr.getyx()[0] + 1
+        for i in range(used_n):
+            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.MEM_GAUGE_USED)
+
+        per = str(self.resource.percent)[:self.width].rjust(self.width)
+        self.scr.addstr(y, x, per, self.color_theme.PERCENT)
+
+        self.scr.move(y+height, x)
+
 #=======================================
 # Layout
 #=======================================
@@ -138,4 +218,20 @@ class HorizontalDefaultLayout(Layout):
         y = int(len(self.each_cpu)/2)+1
         self.memory.draw(y, 0, width)
         self.swap.draw(y+1, 0, width)
+
+#--------------------
+# VerticalMinimalLayout
+#--------------------
+
+class VerticalMinimalLayout(Layout):
+
+    def _init(self):
+        self.cpu = CPUVerticalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
+        self.memory = MemoryVerticalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
+
+    def draw(self):
+        (height, width) = self.scr.getmaxyx()
+        center = int(height/2)
+        self.cpu.draw(0, 0, center)
+        self.memory.draw(center, 0, center)
 

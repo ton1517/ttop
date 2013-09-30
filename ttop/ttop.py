@@ -74,7 +74,7 @@ def select_layout_class(arguments):
     elif arguments["normal"] and arguments["vertical"]:
         pass
     elif arguments["minimal"] and arguments["vertical"]:
-        pass
+        layout_class = VerticalMinimalLayout
     elif arguments["stack"] and arguments["vertical"]:
         pass
     else:
