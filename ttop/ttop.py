@@ -26,9 +26,9 @@ from multiprocessing import Process
 
 from docopt import docopt
 
-from core import *
-from color import *
-from view import *
+import core
+import color
+import view
 
 #=======================================
 # Config
@@ -59,22 +59,22 @@ def init_curses():
     curses.curs_set(0)
 
 def select_color_theme(arguments):
-    color_table = ColorTable()
-    return MonoColorTheme(color_table) if arguments["--no-color"] else DefaultColorTheme(color_table)
+    color_table = color.ColorTable()
+    return color.MonoColorTheme(color_table) if arguments["--no-color"] else color.DefaultColorTheme(color_table)
 
 def select_layout_class(arguments):
     layout_class = None
 
     if arguments["normal"] and arguments["horizontal"]:
-        layout_class = HorizontalDefaultLayout
+        layout_class = view.HorizontalDefaultLayout
     elif arguments["minimal"] and arguments["horizontal"]:
-        layout_class = HorizontalMinimalLayout
+        layout_class = view.HorizontalMinimalLayout
     elif arguments["stack"] and arguments["horizontal"]:
         pass
     elif arguments["normal"] and arguments["vertical"]:
-        layout_class = VerticalDefaultLayout
+        layout_class = view.VerticalDefaultLayout
     elif arguments["minimal"] and arguments["vertical"]:
-        layout_class = VerticalMinimalLayout
+        layout_class = view.VerticalMinimalLayout
     elif arguments["stack"] and arguments["vertical"]:
         pass
     else:
@@ -89,7 +89,7 @@ def start_process(scr, arguments):
     p.start()
 
 def update_handler(scr, arguments):
-    ss = SystemStatus()
+    ss = core.SystemStatus()
     theme = select_color_theme(arguments)
     layout_class = select_layout_class(arguments)
 
