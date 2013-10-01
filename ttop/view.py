@@ -33,10 +33,10 @@ class HorizontalLineGauge(object):
         self.scr.addstr(self.GAUGE_LEFT, self.color_theme.FRAME)
 
         (now_y, now_x) = self.scr.getyx()
-        width_resource = width - (now_x - x) - (len(self.GAUGE_RIGHT)+1)
+        width_resource = width - (now_x - x) - (len(self.GAUGE_RIGHT))
         self._draw_resource(now_y, now_x, width_resource)
 
-        self.scr.addstr(self.GAUGE_RIGHT+" ", self.color_theme.FRAME)
+        self.scr.addstr(self.GAUGE_RIGHT, self.color_theme.FRAME)
 
     def _draw_resource(self, y, x, width):
         pass
@@ -81,8 +81,8 @@ class MemoryHorizontalLineGauge(HorizontalLineGauge):
 
 class VerticalLineGauge(object):
 
-    GAUGE_TOP = "/=\\"
-    GAUGE_BOTTOM = "\\=/"
+    GAUGE_TOP = "|~|"
+    GAUGE_BOTTOM = "|_|"
     GAUGE = "|=|"
     GAUGE_BLANK = "   "
 
@@ -276,7 +276,7 @@ class VerticalDefaultLayout(Layout):
             h = center if i%2 == 0 else height-center
             cpu.draw(y, x, h)
 
-        x = (int(len(self.each_cpu)/2)+1)*gauge_w
+        x = (int(len(self.each_cpu)+1)/2+1)*gauge_w
         self.memory.draw(0, x, height)
         self.swap.draw(0, x+gauge_w, height)
 

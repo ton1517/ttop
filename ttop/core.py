@@ -129,9 +129,13 @@ class Updater(object):
 
     def update(self):
         self.system_status.update()
-        self.scr.erase()
-        self.layout.draw()
-        self.scr.refresh()
+        try:
+            self.scr.erase()
+            self.layout.draw()
+            self.scr.refresh()
+        except:
+            self.scr.refresh()
+            pass
 
 
 #--------------------
