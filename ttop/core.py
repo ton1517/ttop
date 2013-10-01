@@ -118,3 +118,27 @@ class SystemStatus(object):
     def __update_memory(self, mem, tuple_mem):
         mem.update(tuple_mem.total, tuple_mem.used)
 
+#--------------------
+# Arguments
+#--------------------
+
+class Arguments(object):
+
+    def __init__(self, arg):
+        self.no_color = arg["--no-color"]
+        self.interval = float(arg["--interval"])
+        self.no_tmux = arg["--no-tmux"]
+        self.normal = arg["normal"]
+        self.minimal = arg["minimal"]
+        self.stack = arg["stack"]
+        self.horizontal = arg["horizontal"]
+        self.vertical = arg["vertical"]
+
+        # default view is "normal".
+        if not self.normal and not self.minimal and not self.stack:
+            self.normal = True
+
+        # default style is "horizontal".
+        if not self.horizontal and not self.vertical:
+            self.horizontal = True
+

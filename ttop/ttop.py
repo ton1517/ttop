@@ -14,7 +14,7 @@ Options:
   -h --help           show help.
   -v --version        show version.
   -C --no-color       use monocolor.
-  -i --interval <s>   refresh interval(second) [default: 1].
+  -i --interval <s>   refresh interval(second) [default: 1.0].
   -T --no-tmux        don't use tmux mode.
 """
 
@@ -42,15 +42,6 @@ EXIT_KEYS = (ord("q"), ord("Q"), 27) # 27:ESC
 # Functions
 #=======================================
 
-def init_arguments(arg):
-    # default view is "normal".
-    if not arg["normal"] and not arg["minimal"] and not arg["stack"]:
-        arg["normal"] = True
-
-    # default style is "horizontal".
-    if not arg["horizontal"] and not arg["vertical"]:
-        arg["horizontal"] = True
-
 def init_curses():
     """must be called in hook_curses function."""
 
@@ -66,29 +57,29 @@ def new_pane_and_exec_process(arguments):
     command = " ".join(sys.argv) + " --no-tmux"
 
     # if horizontal option, split-window -v. if vertical option, split-window -h.
-    tmux.split_window(arguments["horizontal"], arguments["vertical"], command)
+    tmux.split_window(arguments.horizontal, arguments.vertical, command)
     tmux.move_last_pane()
     tmux.resize_pane(width, height)
     tmux.swap_pane()
 
 def select_color_theme(arguments):
     color_table = color.ColorTable()
-    return color.MonoColorTheme(color_table) if arguments["--no-color"] else color.DefaultColorTheme(color_table)
+    return color.MonoColorTheme(color_table) if arguments.no_color else color.DefaultColorTheme(color_table)
 
 def select_layout_class(arguments):
     layout_class = None
 
-    if arguments["normal"] and arguments["horizontal"]:
+    if arguments.normal and arguments.horizontal:
         layout_class = view.HorizontalDefaultLayout
-    elif arguments["minimal"] and arguments["horizontal"]:
+    elif arguments.minimal and arguments.horizontal:
         layout_class = view.HorizontalMinimalLayout
-    elif arguments["stack"] and arguments["horizontal"]:
+    elif arguments.stack and arguments.horizontal:
         pass
-    elif arguments["normal"] and arguments["vertical"]:
+    elif arguments.normal and arguments.vertical:
         layout_class = view.VerticalDefaultLayout
-    elif arguments["minimal"] and arguments["vertical"]:
+    elif arguments.minimal and arguments.vertical:
         layout_class = view.VerticalMinimalLayout
-    elif arguments["stack"] and arguments["vertical"]:
+    elif arguments.stack and arguments.vertical:
         pass
     else:
         pass
@@ -113,7 +104,7 @@ def update_handler(scr, arguments):
 
     layout = layout_class(scr, theme, ss)
 
-    interval = float(arguments["--interval"])
+    interval = arguments.interval
 
     while True:
         ss.update(interval)
@@ -134,10 +125,10 @@ def hook_curses(scr, arguments):
     wait_key_and_exit(scr)
 
 def main():
-    arguments = docopt(__doc__, version=__version__)
-    init_arguments(arguments)
+    arg_dict = docopt(__doc__, version=__version__)
+    arguments = core.Arguments(arg_dict)
 
-    if tmux.in_tmux() and not arguments["--no-tmux"]:
+    if tmux.in_tmux() and not arguments.no_tmux:
         new_pane_and_exec_process(arguments)
         sys.exit()
 
