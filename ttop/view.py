@@ -1,5 +1,7 @@
 import curses
 
+from core import *
+
 #=======================================
 # View components
 #=======================================
@@ -163,6 +165,9 @@ class MemoryVerticalLineGauge(VerticalLineGauge):
 
 class Layout(object):
 
+    WIDTH = None
+    HEIGHT = None
+
     def __init__(self, scr, color_theme, system_status):
         self.scr = scr
         self.color_theme = color_theme
@@ -182,6 +187,9 @@ class Layout(object):
 
 class HorizontalMinimalLayout(Layout):
 
+    WIDTH = None
+    HEIGHT = 1
+
     def _init(self):
         self.cpu = CPUHorizontalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
         self.memory = MemoryHorizontalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
@@ -197,6 +205,9 @@ class HorizontalMinimalLayout(Layout):
 #--------------------
 
 class HorizontalDefaultLayout(Layout):
+
+    WIDTH = None
+    HEIGHT = 3 + int((1+CPU.NUM_CPUS)/2)
 
     def _init(self):
         self.cpu = CPUHorizontalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
@@ -225,6 +236,9 @@ class HorizontalDefaultLayout(Layout):
 
 class VerticalMinimalLayout(Layout):
 
+    WIDTH = 3
+    HEIGHT = None
+
     def _init(self):
         self.cpu = CPUVerticalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
         self.memory = MemoryVerticalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
@@ -240,6 +254,9 @@ class VerticalMinimalLayout(Layout):
 #--------------------
 
 class VerticalDefaultLayout(Layout):
+
+    WIDTH = 9 + 3*int((1+CPU.NUM_CPUS)/2)
+    HEIGHT = None
 
     def _init(self):
         self.cpu = CPUVerticalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)

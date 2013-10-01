@@ -6,7 +6,7 @@ ttop is CUI graphical system monitor.
 this tools is designed for use with tmux(or screen).
 
 Usage:
-  ttop [--no-color] [--interval <s>] [normal | minimal | stack] [horizontal | vertical]
+  ttop [--no-color] [--interval <s>] [--no-tmux] [normal | minimal | stack] [horizontal | vertical]
   ttop -h | --help
   ttop -v | --version
 
@@ -15,6 +15,7 @@ Options:
   -v --version        show version.
   -C --no-color       use monocolor.
   -i --interval <s>   refresh interval(second) [default: 1].
+  -T --no-tmux        don't use tmux mode.
 """
 
 from . import __author__, __version__, __license__
@@ -29,6 +30,7 @@ from docopt import docopt
 import core
 import color
 import view
+import tmux
 
 #=======================================
 # Config
@@ -57,6 +59,17 @@ def init_curses():
         curses.use_default_colors()
     ## hide cursor
     curses.curs_set(0)
+
+def new_pane_and_exec_process(arguments):
+    layout_class = select_layout_class(arguments)
+    width, height = (layout_class.WIDTH, layout_class.HEIGHT)
+    command = " ".join(sys.argv) + " --no-tmux"
+
+    # if horizontal option, split-window -v. if vertical option, split-window -h.
+    tmux.split_window(arguments["horizontal"], arguments["vertical"], command)
+    tmux.move_last_pane()
+    tmux.resize_pane(width, height)
+    tmux.swap_pane()
 
 def select_color_theme(arguments):
     color_table = color.ColorTable()
@@ -123,6 +136,10 @@ def hook_curses(scr, arguments):
 def main():
     arguments = docopt(__doc__, version=__version__)
     init_arguments(arguments)
+
+    if tmux.in_tmux() and not arguments["--no-tmux"]:
+        new_pane_and_exec_process(arguments)
+        sys.exit()
 
     curses.wrapper(hook_curses, arguments)
 
