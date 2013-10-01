@@ -128,14 +128,14 @@ class Updater(object):
         self.layout = layout
 
     def update(self):
-        self.system_status.update()
         try:
             self.scr.erase()
             self.layout.draw()
             self.scr.refresh()
         except:
             self.scr.refresh()
-            pass
+
+        self.system_status.update()
 
 
 #--------------------
