@@ -7,7 +7,7 @@ import subprocess
 
 def call(command):
     """call tmux subcommand."""
-    subprocess.Popen("tmux " + command, shell=True, stdout=subprocess.PIPE)
+    subprocess.call("tmux " + command, shell=True, stdout=subprocess.PIPE)
 
 def in_tmux():
     """if process is in tmux, return True."""
