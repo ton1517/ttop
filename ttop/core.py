@@ -83,18 +83,16 @@ class Memory(object):
 class SystemStatus(object):
     """this class have system status, CPU percent, Memory percent, etc."""
 
-    def __init__(self):
+    def __init__(self, update_interval):
+        self.update_interval = update_interval
         self.cpu = CPU()
         self.each_cpu = [CPU() for i in range(CPU.NUM_CPUS)]
         self.memory = Memory()
         self.swap = Memory()
 
-        self.update(0)
-
-    def update(self, interval = 0.1):
+    def update(self):
         """poll system status.(blocking)"""
-
-        times_percent = psutil.cpu_times_percent(interval=interval, percpu=True)
+        times_percent = psutil.cpu_times_percent(interval=self.update_interval, percpu=True)
 
         self.__update_cpu(times_percent)
         for i, c in enumerate(times_percent):
@@ -117,6 +115,24 @@ class SystemStatus(object):
 
     def __update_memory(self, mem, tuple_mem):
         mem.update(tuple_mem.total, tuple_mem.used)
+
+#--------------------
+# Updater
+#--------------------
+
+class Updater(object):
+
+    def __init__(self, scr, system_status, layout):
+        self.scr = scr
+        self.system_status = system_status
+        self.layout = layout
+
+    def update(self):
+        self.system_status.update()
+        self.scr.erase()
+        self.layout.draw()
+        self.scr.refresh()
+
 
 #--------------------
 # Arguments

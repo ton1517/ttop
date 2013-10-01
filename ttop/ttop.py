@@ -18,8 +18,7 @@ Options:
   -T --no-tmux        don't use tmux mode.
 """
 
-from . import __author__, __version__, __license__
-from . import __doc__ as __description__
+from . import __version__
 
 import sys
 import curses
@@ -50,6 +49,14 @@ def init_curses():
         curses.use_default_colors()
     ## hide cursor
     curses.curs_set(0)
+
+def create_updater(scr, arguments):
+    ss = core.SystemStatus(arguments.interval)
+    theme = select_color_theme(arguments)
+    layout_class = select_layout_class(arguments)
+    layout = layout_class(scr, theme, ss)
+
+    return core.Updater(scr, ss, layout)
 
 def new_pane_and_exec_process(arguments):
     layout_class = select_layout_class(arguments)
@@ -87,30 +94,14 @@ def select_layout_class(arguments):
     return layout_class
 
 
-def start_process(scr, arguments):
-    p = Process(target=update_handler, args=(scr, arguments))
+def start_process(updater):
+    p = Process(target=update_handler, args=(updater,))
     p.daemon = True
     p.start()
 
-def update_handler(scr, arguments):
-    ss = core.SystemStatus()
-    theme = select_color_theme(arguments)
-    layout_class = select_layout_class(arguments)
-
-    if layout_class is None:
-        scr.addstr("not yet implements.")
-        scr.refresh()
-        return
-
-    layout = layout_class(scr, theme, ss)
-
-    interval = arguments.interval
-
+def update_handler(updater):
     while True:
-        ss.update(interval)
-        scr.erase()
-        layout.draw()
-        scr.refresh()
+        updater.update()
 
 def wait_key_and_exit(scr):
     while True:
@@ -121,7 +112,10 @@ def wait_key_and_exit(scr):
 
 def hook_curses(scr, arguments):
     init_curses()
-    start_process(scr, arguments)
+
+    updater = create_updater(scr, arguments)
+    start_process(updater)
+
     wait_key_and_exit(scr)
 
 def main():
