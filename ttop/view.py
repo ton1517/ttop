@@ -188,7 +188,7 @@ class Layout(object):
 class HorizontalMinimalLayout(Layout):
 
     WIDTH = None
-    HEIGHT = 1
+    HEIGHT = 2
 
     def _init(self):
         self.cpu = CPUHorizontalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
@@ -196,9 +196,8 @@ class HorizontalMinimalLayout(Layout):
 
     def draw(self):
         (height, width) = self.scr.getmaxyx()
-        center = int(width/2)
-        self.cpu.draw(0, 0, center)
-        self.memory.draw(0, center, center)
+        self.cpu.draw(0, 0, width)
+        self.memory.draw(1, 0, width)
 
 #--------------------
 # HorizontalDefaultLayout
@@ -236,7 +235,7 @@ class HorizontalDefaultLayout(Layout):
 
 class VerticalMinimalLayout(Layout):
 
-    WIDTH = 3
+    WIDTH = 3*2
     HEIGHT = None
 
     def _init(self):
@@ -245,9 +244,8 @@ class VerticalMinimalLayout(Layout):
 
     def draw(self):
         (height, width) = self.scr.getmaxyx()
-        center = int(height/2)
-        self.cpu.draw(0, 0, center)
-        self.memory.draw(center, 0, center)
+        self.cpu.draw(0, 0, height)
+        self.memory.draw(0, self.cpu.width, height)
 
 #--------------------
 # VerticalDefaultLayout
