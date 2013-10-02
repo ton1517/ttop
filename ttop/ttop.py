@@ -81,15 +81,14 @@ def select_layout_class(arguments):
     elif arguments.minimal and arguments.horizontal:
         layout_class = view.HorizontalMinimalLayout
     elif arguments.stack and arguments.horizontal:
-        pass
+        layout_class = view.HorizontalStackLayout
     elif arguments.normal and arguments.vertical:
         layout_class = view.VerticalDefaultLayout
     elif arguments.minimal and arguments.vertical:
         layout_class = view.VerticalMinimalLayout
     elif arguments.stack and arguments.vertical:
-        pass
-    else:
-        pass
+        # TODO
+        layout_class = view.HorizontalStackLayout
 
     return layout_class
 

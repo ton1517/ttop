@@ -1,5 +1,6 @@
 from hurry.filesize import size
 import psutil
+import copy
 
 #=======================================
 # Core Classes
@@ -74,7 +75,35 @@ class Memory(object):
         self.percent = Percent((1.0*used/total)*100)
 
     def __str__(self):
-        return "%s %s/%s" % (self.percent, self.used, self.total)
+        return "%s/%s %s" % (self.used, self.total, self.percent)
+
+#--------------------
+# ResourceHistory
+#--------------------
+
+class ResourceHistory(object):
+
+    def __init__(self, resource_class):
+        self.resource_class = resource_class
+        self.resources = []
+
+    def get(self, index):
+        return self.resources[index]
+
+    def pack(self, length):
+        res_len = len(self.resources)
+        if length < res_len:
+            del_len = res_len - length
+            del self.resources[:del_len]
+        elif length > res_len:
+            push_len = length - res_len
+            self.resources = [self.resource_class() for i in range(push_len)] + self.resources
+
+    def push(self, resource, max_len):
+        self.resources.append(copy.copy(resource))
+        if len(self.resources) > max_len:
+            del_len = len(self.resources) - max_len
+            del self.resources[:del_len]
 
 #--------------------
 # SystemStatus
