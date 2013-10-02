@@ -3,7 +3,8 @@
 
 """
 ttop is CUI graphical system monitor.
-this tools is designed for use with tmux(or screen).
+this tools is designed for use with tmux.
+https://github.com/ton1517/ttop
 
 Usage:
   ttop [--no-color] [--interval <s>] [--no-tmux] [normal | minimal | stack] [horizontal | vertical]
@@ -118,7 +119,7 @@ def hook_curses(scr, arguments):
     wait_key_and_exit(scr)
 
 def main():
-    arg_dict = docopt(__doc__, version=__version__)
+    arg_dict = docopt(__doc__, version="ttop "+__version__)
     arguments = core.Arguments(arg_dict)
 
     if tmux.in_tmux() and not arguments.no_tmux:
