@@ -122,6 +122,12 @@ def main():
     arg_dict = docopt(__doc__, version="ttop "+__version__)
     arguments = core.Arguments(arg_dict)
 
+    if tmux.get_version() < 1.8:
+        print("your tmux version is " + str(tmux.get_version()) + ".")
+        print("only support tmux 1.8 or higher.")
+        print("you should use --no-tmux option.")
+        sys.exit()
+
     if tmux.in_tmux() and not arguments.no_tmux:
         new_pane_and_exec_process(arguments)
         sys.exit()

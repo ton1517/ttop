@@ -7,7 +7,14 @@ import subprocess
 
 def call(command):
     """call tmux subcommand."""
-    subprocess.call("tmux " + command, shell=True, stdout=subprocess.PIPE)
+    (stdout, stderr) = subprocess.Popen("tmux " + command, shell=True, stdout=subprocess.PIPE).communicate()
+    return stdout
+
+def get_version():
+    version = call("-V")
+    import re
+    result = re.search(b"[\d\.]+", version)
+    return float(result.group())
 
 def in_tmux():
     """if process is in tmux, return True."""
