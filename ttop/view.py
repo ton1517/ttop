@@ -1,6 +1,6 @@
 import curses
 
-from core import *
+from . import core
 
 #=======================================
 # View components
@@ -132,8 +132,6 @@ class CPUVerticalLineGauge(VerticalLineGauge):
         per = str(self.resource.usedPercent)[:self.width].rjust(self.width)
         self.scr.addstr(y, x, per, self.color_theme.PERCENT)
 
-        self.scr.move(y+height, x)
-
 #--------------------
 # MemoryVerticalLineGauge
 #--------------------
@@ -152,8 +150,6 @@ class MemoryVerticalLineGauge(VerticalLineGauge):
 
         per = str(self.resource.percent)[:self.width].rjust(self.width)
         self.scr.addstr(y, x, per, self.color_theme.PERCENT)
-
-        self.scr.move(y+height, x)
 
 #--------------------
 # HorizontalStackView
@@ -174,7 +170,7 @@ class HorizontalStackView(object):
         self.resource = resource
         self.height = 10
 
-        self.resource_history = ResourceHistory(resource.__class__)
+        self.resource_history = core.ResourceHistory(resource.__class__)
         self.resources = []
         self.text = ""
 
@@ -301,7 +297,7 @@ class HorizontalMinimalLayout(Layout):
 class HorizontalDefaultLayout(Layout):
 
     WIDTH = None
-    HEIGHT = 3 + int((1+CPU.NUM_CPUS)/2)
+    HEIGHT = 3 + int((1+core.CPU.NUM_CPUS)/2)
 
     def _init(self):
         self.cpu = CPUHorizontalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
@@ -348,7 +344,7 @@ class VerticalMinimalLayout(Layout):
 
 class VerticalDefaultLayout(Layout):
 
-    WIDTH = 9 + 3*int((1+CPU.NUM_CPUS)/2)
+    WIDTH = 9 + 3*int((1+core.CPU.NUM_CPUS)/2)
     HEIGHT = None
 
     def _init(self):
@@ -369,7 +365,7 @@ class VerticalDefaultLayout(Layout):
             h = center if i%2 == 0 else height-center
             cpu.draw(y, x, h)
 
-        x = (int(len(self.each_cpu)+1)/2+1)*gauge_w
+        x = int((len(self.each_cpu)+1)/2+1)*gauge_w
         self.memory.draw(0, x, height)
         self.swap.draw(0, x+gauge_w, height)
 

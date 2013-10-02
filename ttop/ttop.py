@@ -26,10 +26,10 @@ from multiprocessing import Process
 
 from docopt import docopt
 
-import core
-import color
-import view
-import tmux
+from . import core
+from . import color
+from . import view
+from . import tmux
 
 #=======================================
 # Config

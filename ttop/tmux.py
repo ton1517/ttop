@@ -25,8 +25,8 @@ def resize_pane(width=None, height=None):
     """resize pane"""
     resize_option = ""
 
-    if width:  resize_option += " -x " + str(width)
-    if height: resize_option += " -y " + str(height)
+    if width:  resize_option += " -x " + str(width+1)
+    if height: resize_option += " -y " + str(height+1)
 
     call("resize-pane " + resize_option)
 
