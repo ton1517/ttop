@@ -26,7 +26,14 @@ class ColorTable(object):
         self.RED = self.__define_color(curses.COLOR_RED, -1)
         self.YELLOW = self.__define_color(curses.COLOR_YELLOW, -1)
 
-        self.GRAY = self.BLACK | curses.A_BOLD
+        self.BBLACK = self.BLACK | curses.A_BOLD
+        self.BWHITE = self.WHITE | curses.A_BOLD
+        self.BBLUE = self.BLUE | curses.A_BOLD
+        self.BCYAN = self.CYAN | curses.A_BOLD
+        self.BGREEN = self.GREEN | curses.A_BOLD
+        self.BMAGENTA = self.MAGENTA | curses.A_BOLD
+        self.BRED = self.RED | curses.A_BOLD
+        self.BYELLOW = self.YELLOW | curses.A_BOLD
 
     def __define_color(self, fg, bg):
         self.pair_number += 1
@@ -52,6 +59,11 @@ class MonoColorTheme(object):
 
         self.MEM_GAUGE_USED = color.DEFAULT
 
+        self.UPTIME = color.DEFAULT
+        self.LOADAVG1 = color.DEFAULT
+        self.LOADAVG5 = color.DEFAULT
+        self.LOADAVG15 = color.DEFAULT
+
 #--------------------
 # DefaultColorTheme
 #--------------------
@@ -62,11 +74,15 @@ class DefaultColorTheme(MonoColorTheme):
     def __init__(self, color):
         MonoColorTheme.__init__(self, color)
 
-        self.PERCENT = color.GRAY
+        self.PERCENT = color.BBLACK
 
         self.CPU_GAUGE_USER = color.GREEN
         self.CPU_GAUGE_SYSTEM = color.RED
 
         self.MEM_GAUGE_USED = color.GREEN
 
+        self.UPTIME = color.GREEN
+        self.LOADAVG1 = color.BBLACK
+        self.LOADAVG5 = color.WHITE
+        self.LOADAVG15 = color.BWHITE
 
