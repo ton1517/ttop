@@ -98,6 +98,34 @@ class LoadAverage(object):
         return "%.2f %.2f %.2f" % (self.avg1, self.avg5, self.avg15)
 
 #--------------------
+# Uptime
+#--------------------
+import uptime
+class Uptime(object):
+
+    def __init__(self):
+        self.uptime = 0
+        self.days = 0
+        self.hours = 0
+        self.minutes = 0
+        self.seconds = 0
+
+    def update(self):
+        self.uptime = uptime.uptime()
+        up = self.uptime
+        self.days, up = up // 86400, up % 86400
+        self.hours, up = up // 3600, up % 3600
+        self.minutes, up = up // 60, up % 60
+        self.seconds = up
+
+    def __str__(self):
+        times = ""
+        if self.days:
+            times += "%d day%s " % (self.days, 's' if self.days != 1 else '')
+        times += "%d:%d:%d" % (self.hours, self.minutes, self.seconds)
+        return times
+
+#--------------------
 # ResourceHistory
 #--------------------
 
@@ -139,6 +167,7 @@ class SystemStatus(object):
         self.memory = Memory()
         self.swap = Memory()
         self.loadavg = LoadAverage()
+        self.uptime = Uptime()
 
     def update(self):
         """poll system status.(blocking)"""
@@ -152,6 +181,7 @@ class SystemStatus(object):
         self.__update_memory(self.swap, psutil.swap_memory())
 
         self.loadavg.update()
+        self.uptime.update()
 
     def __update_cpu(self, cpuper):
         sum_user = 0
