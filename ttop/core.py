@@ -1,6 +1,7 @@
 from hurry.filesize import size
 import psutil
 import copy
+import curses
 
 #=======================================
 # Core Classes
@@ -214,8 +215,13 @@ class Updater(object):
             self.scr.erase()
             self.layout.draw()
             self.scr.refresh()
-        except:
-            self.scr.refresh()
+        except curses.error as e:
+            (h, w) = self.scr.getmaxyx()
+            (y, x) = self.scr.getyx()
+            if x == (w-1) and y == (h-1):
+                self.scr.refresh()
+            else:
+                raise e
 
         self.system_status.update()
 
