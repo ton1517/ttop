@@ -78,6 +78,26 @@ class Memory(object):
         return "%s/%s %s" % (self.used, self.total, self.percent)
 
 #--------------------
+# LoadAverage
+#--------------------
+import os
+class LoadAverage(object):
+
+    def __init__(self):
+        self.avg1 = 0.0
+        self.avg5 = 0.0
+        self.avg15 = 0.0
+
+    def update(self):
+        try:
+            self.avg1, self.avg5, self.avg15 = os.getloadavg()
+        except os.error:
+            self.avg1, self.avg5, self.avg15 = 0.0, 0.0, 0.0
+
+    def __str__(self):
+        return "%.2f %.2f %.2f" % (self.avg1, self.avg5, self.avg15)
+
+#--------------------
 # ResourceHistory
 #--------------------
 
@@ -118,6 +138,7 @@ class SystemStatus(object):
         self.each_cpu = [CPU() for i in range(CPU.NUM_CPUS)]
         self.memory = Memory()
         self.swap = Memory()
+        self.loadavg = LoadAverage()
 
     def update(self):
         """poll system status.(blocking)"""
@@ -129,6 +150,8 @@ class SystemStatus(object):
 
         self.__update_memory(self.memory, psutil.virtual_memory())
         self.__update_memory(self.swap, psutil.swap_memory())
+
+        self.loadavg.update()
 
     def __update_cpu(self, cpuper):
         sum_user = 0
