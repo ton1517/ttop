@@ -246,6 +246,25 @@ class MemoryHorizontalStackView(HorizontalStackView):
         for i in range(used_n):
             self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.MEM_GAUGE_USED)
 
+#--------------------
+# InfoTextLine
+#--------------------
+
+class InfoTextLine(object):
+
+    def __init__(self, scr, color_theme, system_status):
+        self.scr = scr
+        self.color_theme = color_theme
+        self.system_status = system_status
+
+    def draw(self, y, x, width):
+        self.scr.addstr(y, x, "Uptime ", self.color_theme.LABEL)
+        self.scr.addstr(str(self.system_status.uptime), self.color_theme.UPTIME)
+        self.scr.addstr(", Load average ", self.color_theme.LABEL)
+        self.scr.addstr("%.2f "%self.system_status.loadavg.avg1, self.color_theme.LOADAVG1)
+        self.scr.addstr("%.2f "%self.system_status.loadavg.avg5, self.color_theme.LOADAVG5)
+        self.scr.addstr("%.2f"%self.system_status.loadavg.avg15, self.color_theme.LOADAVG15)
+
 #=======================================
 # Layout
 #=======================================
@@ -279,16 +298,18 @@ class Layout(object):
 class HorizontalMinimalLayout(Layout):
 
     WIDTH = None
-    HEIGHT = 2
+    HEIGHT = 3
 
     def _init(self):
         self.cpu = CPUHorizontalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
         self.memory = MemoryHorizontalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
+        self.textline = InfoTextLine(self.scr, self.color_theme, self.system_status)
 
     def draw(self):
         (height, width) = self.scr.getmaxyx()
         self.cpu.draw(0, 0, width)
         self.memory.draw(1, 0, width)
+        self.textline.draw(2, 0, width)
 
 #--------------------
 # HorizontalDefaultLayout
@@ -297,13 +318,14 @@ class HorizontalMinimalLayout(Layout):
 class HorizontalDefaultLayout(Layout):
 
     WIDTH = None
-    HEIGHT = 3 + int((1+core.CPU.NUM_CPUS)/2)
+    HEIGHT = 4 + int((1+core.CPU.NUM_CPUS)/2)
 
     def _init(self):
         self.cpu = CPUHorizontalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
         self.each_cpu = [CPUHorizontalLineGauge(self.scr, self.color_theme, str(i+1), cpu) for i, cpu in enumerate(self.system_status.each_cpu)]
         self.memory = MemoryHorizontalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
         self.swap = MemoryHorizontalLineGauge(self.scr, self.color_theme, "SWP", self.system_status.swap)
+        self.textline = InfoTextLine(self.scr, self.color_theme, self.system_status)
 
     def draw(self):
         (height, width) = self.scr.getmaxyx()
@@ -319,6 +341,8 @@ class HorizontalDefaultLayout(Layout):
         y = int(len(self.each_cpu)/2)+1
         self.memory.draw(y, 0, width)
         self.swap.draw(y+1, 0, width)
+        self.textline.draw(y+2, 0, width)
+
 
 #--------------------
 # VerticalMinimalLayout
