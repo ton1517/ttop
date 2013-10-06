@@ -43,7 +43,7 @@ install from github
 
 ::
 
-    git clone git@github.com:ton1517/ttop.git
+    git clone https://github.com/ton1517/ttop.git
     cd ttop
     python setup.py install
 
