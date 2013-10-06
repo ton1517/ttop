@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+0.7.0 (2013-10-07)
+------------------
+
+- check tmux version. (tmux 1.8 or higher)
+- show Uptime and LoadAverage with horizontal style.
+
 0.6.0 (2013-10-02)
 ------------------
 
