@@ -114,16 +114,18 @@ class Uptime(object):
     def update(self):
         self.uptime = uptime.uptime()
         up = self.uptime
-        self.days, up = up // 86400, up % 86400
-        self.hours, up = up // 3600, up % 3600
-        self.minutes, up = up // 60, up % 60
-        self.seconds = up
+        self.days, up = int(up / 86400), up % 86400
+        self.hours, up = int(up / 3600), up % 3600
+        self.minutes, up = int(up / 60), up % 60
+        self.seconds = int(up)
 
     def __str__(self):
+        fill2 = lambda d: str(d).zfill(2)
+
         times = ""
         if self.days:
             times += "%d day%s " % (self.days, 's' if self.days != 1 else '')
-        times += "%d:%d:%d" % (self.hours, self.minutes, self.seconds)
+        times += "%s:%s:%s" % (fill2(self.hours), fill2(self.minutes), fill2(self.seconds))
         return times
 
 #--------------------
