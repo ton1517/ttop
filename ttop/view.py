@@ -400,16 +400,17 @@ class VerticalDefaultLayout(Layout):
 class HorizontalStackLayout(Layout):
 
     WIDTH = None
-    HEIGHT = 10
+    HEIGHT = 11
 
     def _init(self):
         self.cpu = CPUHorizontalStackView(self.scr, self.color_theme, "CPU", self.system_status.cpu)
         self.memory = MemoryHorizontalStackView(self.scr, self.color_theme, "MEM", self.system_status.memory)
+        self.textline = InfoTextLine(self.scr, self.color_theme, self.system_status)
 
     def draw(self):
         (height, width) = self.scr.getmaxyx()
         center = int(width/2)
         self.cpu.draw(0, 0, center)
         self.memory.draw(0, center, center)
-
+        self.textline.draw(self.cpu.height, 0, width)
 
