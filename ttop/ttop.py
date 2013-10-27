@@ -24,6 +24,7 @@ from . import __version__
 import sys
 import curses
 from multiprocessing import Process
+import time
 
 from docopt import docopt
 
@@ -52,12 +53,12 @@ def init_curses():
     curses.curs_set(0)
 
 def create_updater(scr, arguments):
-    ss = core.SystemStatus(arguments.interval)
+    ss = core.SystemStatus()
     theme = select_color_theme(arguments)
     layout_class = select_layout_class(arguments)
     layout = layout_class(scr, theme, ss)
 
-    return core.Updater(scr, ss, layout)
+    return core.Updater(scr, ss, arguments.interval, layout)
 
 def new_pane_and_exec_process(arguments):
     layout_class = select_layout_class(arguments)
@@ -102,6 +103,7 @@ def start_process(updater):
 def update_handler(updater):
     while True:
         updater.update()
+        time.sleep(updater.interval)
 
 def wait_key_and_exit(scr):
     while True:

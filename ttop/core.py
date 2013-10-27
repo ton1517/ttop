@@ -163,20 +163,20 @@ class ResourceHistory(object):
 class SystemStatus(object):
     """this class have system status, CPU percent, Memory percent, etc."""
 
-    def __init__(self, update_interval):
-        self.update_interval = update_interval
+    def __init__(self):
         self.cpu = CPU()
         self.each_cpu = [CPU() for i in range(CPU.NUM_CPUS)]
         self.memory = Memory()
         self.swap = Memory()
         self.loadavg = LoadAverage()
         self.uptime = Uptime()
+        self.update()
 
     def update(self):
-        """poll system status.(blocking)"""
-        times_percent = psutil.cpu_times_percent(interval=self.update_interval, percpu=True)
+        times_percent = psutil.cpu_times_percent(percpu=True)
+        cpu = psutil.cpu_times_percent()
+        self.cpu.update(cpu.user, cpu.system, cpu.idle)
 
-        self.__update_cpu(times_percent)
         for i, c in enumerate(times_percent):
             self.each_cpu[i].update(c.user, c.system, c.idle)
 
@@ -185,18 +185,6 @@ class SystemStatus(object):
 
         self.loadavg.update()
         self.uptime.update()
-
-    def __update_cpu(self, cpuper):
-        sum_user = 0
-        sum_system = 0
-        sum_idle = 0
-        l = len(cpuper)
-        for cpu in cpuper:
-            sum_user += cpu.user
-            sum_system += cpu.system
-            sum_idle += cpu.idle
-
-        self.cpu.update(sum_user/l, sum_system/l, sum_idle/l)
 
     def __update_memory(self, mem, tuple_mem):
         mem.update(tuple_mem.total, tuple_mem.used)
@@ -207,12 +195,15 @@ class SystemStatus(object):
 
 class Updater(object):
 
-    def __init__(self, scr, system_status, layout):
+    def __init__(self, scr, system_status, interval, layout):
         self.scr = scr
         self.system_status = system_status
+        self.interval = interval
         self.layout = layout
 
     def update(self):
+        self.system_status.update()
+
         try:
             self.scr.erase()
             self.layout.draw()
@@ -224,9 +215,6 @@ class Updater(object):
                 self.scr.refresh()
             else:
                 raise e
-
-        self.system_status.update()
-
 
 #--------------------
 # Arguments
