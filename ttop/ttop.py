@@ -37,20 +37,22 @@ from . import tmux
 # Config
 #=======================================
 
-EXIT_KEYS = (ord("q"), ord("Q"), 27) # 27:ESC
+EXIT_KEYS = (ord("q"), ord("Q"), 27)  # 27:ESC
 
 #=======================================
 # Functions
 #=======================================
 
+
 def init_curses():
     """must be called in hook_curses function."""
 
-    ## use terminal color.
+    # use terminal color.
     if curses.has_colors():
         curses.use_default_colors()
-    ## hide cursor
+    # hide cursor
     curses.curs_set(0)
+
 
 def create_updater(scr, arguments):
     ss = core.SystemStatus()
@@ -59,6 +61,7 @@ def create_updater(scr, arguments):
     layout = layout_class(scr, theme, ss)
 
     return core.Updater(scr, ss, arguments.interval, layout)
+
 
 def new_pane_and_exec_process(arguments):
     layout_class = select_layout_class(arguments)
@@ -71,9 +74,11 @@ def new_pane_and_exec_process(arguments):
     tmux.resize_pane(width, height)
     tmux.swap_pane()
 
+
 def select_color_theme(arguments):
     color_table = color.ColorTable()
     return color.MonoColorTheme(color_table) if arguments.no_color else color.DefaultColorTheme(color_table)
+
 
 def select_layout_class(arguments):
     layout_class = None
@@ -100,10 +105,12 @@ def start_process(updater):
     p.daemon = True
     p.start()
 
+
 def update_handler(updater):
     while True:
         updater.update()
         time.sleep(updater.interval)
+
 
 def wait_key_and_exit(scr):
     while True:
@@ -111,6 +118,7 @@ def wait_key_and_exit(scr):
 
         if c in EXIT_KEYS:
             sys.exit()
+
 
 def hook_curses(scr, arguments):
     init_curses()
@@ -120,10 +128,10 @@ def hook_curses(scr, arguments):
 
     wait_key_and_exit(scr)
 
-def main():
-    arg_dict = docopt(__doc__, version="ttop "+__version__)
-    arguments = core.Arguments(arg_dict)
 
+def main():
+    arg_dict = docopt(__doc__, version="ttop " + __version__)
+    arguments = core.Arguments(arg_dict)
 
     if tmux.in_tmux() and not arguments.no_tmux:
         if tmux.get_version() < 1.8:

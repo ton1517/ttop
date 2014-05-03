@@ -11,7 +11,9 @@ import curses
 # Percent
 #--------------------
 
+
 class Percent(float):
+
     """Percent type.
 
     >>> p = Percent(95.1)
@@ -22,7 +24,7 @@ class Percent(float):
     """
 
     def __new__(cls, value=0.0):
-        value = value/100
+        value = value / 100
 
         return float.__new__(cls, value)
 
@@ -36,6 +38,7 @@ class Percent(float):
 # Bytes
 #--------------------
 
+
 class Bytes(int):
 
     def __str__(self):
@@ -44,6 +47,7 @@ class Bytes(int):
 #--------------------
 # CPU
 #--------------------
+
 
 class CPU(object):
 
@@ -55,7 +59,7 @@ class CPU(object):
     def update(self, user, system, idle):
         self.userPercent = Percent(user)
         self.systemPercent = Percent(system)
-        self.usedPercent =  Percent(user+system)
+        self.usedPercent = Percent(user + system)
         self.idlePercent = Percent(idle)
 
     def __str__(self):
@@ -65,6 +69,7 @@ class CPU(object):
 # Memory
 #--------------------
 
+
 class Memory(object):
 
     def __init__(self, total=1, used=0):
@@ -73,7 +78,7 @@ class Memory(object):
     def update(self, total, used):
         self.total = Bytes(total)
         self.used = Bytes(used)
-        self.percent = Percent((1.0*used/total)*100)
+        self.percent = Percent((1.0 * used / total) * 100)
 
     def __str__(self):
         return "%s/%s %s" % (self.used, self.total, self.percent)
@@ -82,6 +87,8 @@ class Memory(object):
 # LoadAverage
 #--------------------
 import os
+
+
 class LoadAverage(object):
 
     def __init__(self):
@@ -102,6 +109,8 @@ class LoadAverage(object):
 # Uptime
 #--------------------
 import uptime
+
+
 class Uptime(object):
 
     def __init__(self):
@@ -132,6 +141,7 @@ class Uptime(object):
 # ResourceHistory
 #--------------------
 
+
 class ResourceHistory(object):
 
     def __init__(self, resource_class):
@@ -160,7 +170,9 @@ class ResourceHistory(object):
 # SystemStatus
 #--------------------
 
+
 class SystemStatus(object):
+
     """this class have system status, CPU percent, Memory percent, etc."""
 
     def __init__(self):
@@ -193,6 +205,7 @@ class SystemStatus(object):
 # Updater
 #--------------------
 
+
 class Updater(object):
 
     def __init__(self, scr, system_status, interval, layout):
@@ -211,7 +224,7 @@ class Updater(object):
         except curses.error as e:
             (h, w) = self.scr.getmaxyx()
             (y, x) = self.scr.getyx()
-            if x == (w-1) and y == (h-1):
+            if x == (w - 1) and y == (h - 1):
                 self.scr.refresh()
             else:
                 raise e
@@ -219,6 +232,7 @@ class Updater(object):
 #--------------------
 # Arguments
 #--------------------
+
 
 class Arguments(object):
 
@@ -239,4 +253,3 @@ class Arguments(object):
         # default style is "horizontal".
         if not self.horizontal and not self.vertical:
             self.horizontal = True
-

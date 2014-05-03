@@ -8,7 +8,9 @@ import curses
 # ColorTable
 #--------------------
 
+
 class ColorTable(object):
+
     """define color pair.
     must new this class in curses.wrapper hook function.
     """
@@ -44,11 +46,13 @@ class ColorTable(object):
 # MonoColorTheme
 #--------------------
 
+
 class MonoColorTheme(object):
+
     """define monocolor theme."""
 
     def __init__(self, color):
-        self.color= color
+        self.color = color
 
         self.LABEL = color.DEFAULT
         self.FRAME = color.DEFAULT
@@ -68,7 +72,9 @@ class MonoColorTheme(object):
 # DefaultColorTheme
 #--------------------
 
+
 class DefaultColorTheme(MonoColorTheme):
+
     """define color theme."""
 
     def __init__(self, color):
@@ -85,4 +91,3 @@ class DefaultColorTheme(MonoColorTheme):
         self.LOADAVG1 = color.BBLACK
         self.LOADAVG5 = color.WHITE
         self.LOADAVG15 = color.BWHITE
-
