@@ -301,6 +301,10 @@ class Layout(object):
         pass
 
     def draw(self):
+        height, width = self.scr.getmaxyx()
+        self._draw(width, height)
+
+    def _draw(self, width, height):
         pass
 
 #--------------------
@@ -318,8 +322,7 @@ class HorizontalMinimalLayout(Layout):
         self.memory = MemoryHorizontalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
         self.textline = InfoTextLine(self.scr, self.color_theme, self.system_status)
 
-    def draw(self):
-        (height, width) = self.scr.getmaxyx()
+    def _draw(self, width, height):
         self.cpu.draw(0, 0, width)
         self.memory.draw(1, 0, width)
         self.textline.draw(2, 0, width)
@@ -341,8 +344,7 @@ class HorizontalDefaultLayout(Layout):
         self.swap = MemoryHorizontalLineGauge(self.scr, self.color_theme, "SWP", self.system_status.swap)
         self.textline = InfoTextLine(self.scr, self.color_theme, self.system_status)
 
-    def draw(self):
-        (height, width) = self.scr.getmaxyx()
+    def _draw(self, width, height):
         center = int(width / 2)
 
         self.cpu.draw(0, 0, width)
@@ -371,8 +373,7 @@ class VerticalMinimalLayout(Layout):
         self.cpu = CPUVerticalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
         self.memory = MemoryVerticalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
 
-    def draw(self):
-        (height, width) = self.scr.getmaxyx()
+    def _draw(self, width, height):
         self.cpu.draw(0, 0, height)
         self.memory.draw(0, self.cpu.width, height)
 
@@ -392,8 +393,7 @@ class VerticalDefaultLayout(Layout):
         self.memory = MemoryVerticalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
         self.swap = MemoryVerticalLineGauge(self.scr, self.color_theme, "SWP", self.system_status.swap)
 
-    def draw(self):
-        (height, width) = self.scr.getmaxyx()
+    def _draw(self, width, height):
         gauge_w = self.cpu.width
         center = int(height / 2)
 
@@ -423,8 +423,7 @@ class HorizontalStackLayout(Layout):
         self.memory = MemoryHorizontalStackView(self.scr, self.color_theme, "MEM", self.system_status.memory)
         self.textline = InfoTextLine(self.scr, self.color_theme, self.system_status)
 
-    def draw(self):
-        (height, width) = self.scr.getmaxyx()
+    def _draw(self, width, height):
         center = int(width / 2)
         self.cpu.draw(0, 0, center)
         self.memory.draw(0, center, center)
