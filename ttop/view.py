@@ -31,14 +31,14 @@ class HorizontalLineGauge(object):
 
     def draw(self, y, x, width):
         llabel = self.label.ljust(3)
-        self.scr.addstr(y, x, llabel, self.color_theme.LABEL)
-        self.scr.addstr(self.GAUGE_LEFT, self.color_theme.FRAME)
+        self.scr.insstr(y, x, llabel, self.color_theme.LABEL)
+        self.scr.insstr(y, x + len(llabel), self.GAUGE_LEFT, self.color_theme.FRAME)
 
-        (now_y, now_x) = self.scr.getyx()
+        now_x = x + len(llabel) + len(self.GAUGE_LEFT)
         width_resource = width - (now_x - x) - (len(self.GAUGE_RIGHT))
-        self._draw_resource(now_y, now_x, width_resource)
+        self._draw_resource(y, now_x, width_resource)
 
-        self.scr.addstr(self.GAUGE_RIGHT, self.color_theme.FRAME)
+        self.scr.insstr(y, now_x + width_resource, self.GAUGE_RIGHT, self.color_theme.FRAME)
 
     def _draw_resource(self, y, x, width):
         pass
@@ -54,9 +54,10 @@ class CPUHorizontalLineGauge(HorizontalLineGauge):
         user_n = int(round(self.resource.userPercent * width))
         system_n = int(round(self.resource.systemPercent * width))
 
-        self.scr.addstr(y, x, self.GAUGE * user_n, self.color_theme.CPU_GAUGE_USER)
-        self.scr.addstr(self.GAUGE * system_n, self.color_theme.CPU_GAUGE_SYSTEM)
-        self.scr.addstr(self.GAUGE_BLANK * (width - (user_n + system_n)))
+
+        self.scr.insstr(y, x, self.GAUGE * user_n, self.color_theme.CPU_GAUGE_USER)
+        self.scr.insstr(y, x + user_n, self.GAUGE * system_n, self.color_theme.CPU_GAUGE_SYSTEM)
+        self.scr.insstr(y, x + user_n + system_n, self.GAUGE_BLANK * (width - (user_n + system_n)))
 
         per = str(self.resource.usedPercent)
         start_x = x + width - len(per)
@@ -72,8 +73,8 @@ class MemoryHorizontalLineGauge(HorizontalLineGauge):
     def _draw_resource(self, y, x, width):
         used_n = int(round(self.resource.percent * width))
 
-        self.scr.addstr(y, x, self.GAUGE * used_n, self.color_theme.MEM_GAUGE_USED)
-        self.scr.addstr(self.GAUGE_BLANK * (width - used_n))
+        self.scr.insstr(y, x, self.GAUGE * used_n, self.color_theme.MEM_GAUGE_USED)
+        self.scr.insstr(y, x + used_n, self.GAUGE_BLANK * (width - used_n))
 
         text = str(self.resource)
         start_x = x + width - len(text)
@@ -100,13 +101,13 @@ class VerticalLineGauge(object):
 
     def draw(self, y, x, height):
         llabel = self.label[:self.width].center(self.width)
-        self.scr.addstr(y, x, llabel, self.color_theme.LABEL)
-        self.scr.addstr(y + 1, x, self.GAUGE_TOP, self.color_theme.FRAME)
+        self.scr.insstr(y, x, llabel, self.color_theme.LABEL)
+        self.scr.insstr(y + 1, x, self.GAUGE_TOP, self.color_theme.FRAME)
 
         height_resource = height - 3
         self._draw_resource(y + 2, x, height_resource)
 
-        self.scr.addstr(y + height - 1, x, self.GAUGE_BOTTOM, self.color_theme.FRAME)
+        self.scr.insstr(y + height - 1, x, self.GAUGE_BOTTOM, self.color_theme.FRAME)
 
     def _draw_resource(self, y, x, height):
         pass
@@ -123,17 +124,15 @@ class CPUVerticalLineGauge(VerticalLineGauge):
         system_n = int(round(self.resource.systemPercent * height))
 
         for i in range(height - (user_n + system_n)):
-            self.scr.addstr(y + i, x, self.GAUGE_BLANK)
+            self.scr.insstr(y + i, x, self.GAUGE_BLANK)
 
-        now_y = self.scr.getyx()[0] + 1
+        now_y = y + height - (user_n + system_n)
         for i in range(system_n):
-            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_SYSTEM)
+            self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_SYSTEM)
 
-        now_y = self.scr.getyx()[0] + 1
+        now_y += system_n
         for i in range(user_n):
-            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_USER)
-
-        last_y = self.scr.getyx()[0] + 1
+            self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_USER)
 
         per = str(self.resource.usedPercent)[:self.width].rjust(self.width)
         self.scr.addstr(y, x, per, self.color_theme.PERCENT)
@@ -149,14 +148,14 @@ class MemoryVerticalLineGauge(VerticalLineGauge):
         used_n = int(round(self.resource.percent * height))
 
         for i in range(height - used_n):
-            self.scr.addstr(y + i, x, self.GAUGE_BLANK)
+            self.scr.insstr(y + i, x, self.GAUGE_BLANK)
 
-        now_y = self.scr.getyx()[0] + 1
+        now_y = y + height - used_n
         for i in range(used_n):
-            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.MEM_GAUGE_USED)
+            self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.MEM_GAUGE_USED)
 
         per = str(self.resource.percent)[:self.width].rjust(self.width)
-        self.scr.addstr(y, x, per, self.color_theme.PERCENT)
+        self.scr.insstr(y, x, per, self.color_theme.PERCENT)
 
 #--------------------
 # HorizontalStackView
@@ -184,9 +183,9 @@ class HorizontalStackView(object):
 
     def draw(self, y, x, width):
         llabel = self.label[:3].ljust(3)
-        self.scr.addstr(y + int(self.height / 2), x, llabel, self.color_theme.LABEL)
+        self.scr.insstr(y + int(self.height / 2), x, llabel, self.color_theme.LABEL)
         for i in range(self.height):
-            self.scr.addstr(y + i, x + 3, self.GAUGE_LEFT, self.color_theme.FRAME)
+            self.scr.insstr(y + i, x + len(llabel), self.GAUGE_LEFT, self.color_theme.FRAME)
 
         width_resource = width - 5
 
@@ -195,7 +194,7 @@ class HorizontalStackView(object):
         self._draw_resource(y, x + 4, width_resource)
 
         for i in range(self.height):
-            self.scr.addstr(y + i, x + width - 1, self.GAUGE_LEFT, self.color_theme.FRAME)
+            self.scr.insstr(y + i, x + width - 1, self.GAUGE_LEFT, self.color_theme.FRAME)
 
     def _draw_text(self, y, x, text, max_width):
         self.scr.addnstr(y, x, text, max_width, self.color_theme.PERCENT)
@@ -224,15 +223,15 @@ class CPUHorizontalStackView(HorizontalStackView):
         system_n = int(round(resource.systemPercent * self.height))
 
         for i in range(self.height - (user_n + system_n)):
-            self.scr.addstr(y + i, x, self.GAUGE_BLANK)
+            self.scr.insstr(y + i, x, self.GAUGE_BLANK)
 
-        now_y = self.scr.getyx()[0] + 1
+        now_y = y + self.height - (user_n + system_n)
         for i in range(system_n):
-            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_SYSTEM)
+            self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_SYSTEM)
 
-        now_y = self.scr.getyx()[0] + 1
+        now_y += system_n
         for i in range(user_n):
-            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_USER)
+            self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_USER)
 
 #--------------------
 # MemoryHorizontalStackView
@@ -243,18 +242,18 @@ class MemoryHorizontalStackView(HorizontalStackView):
 
     def _draw_resource(self, y, x, width):
         super(MemoryHorizontalStackView, self)._draw_resource(y, x, width)
-        text = str(self.resource)
-        self.scr.addstr(y, x + width - len(text), text, self.color_theme.PERCENT)
+        per = str(self.resource)
+        self._draw_text(y, x + width - len(per), per, width)
 
     def _draw_gauge(self, y, x, resource):
         used_n = int(round(resource.percent * self.height))
 
         for i in range(self.height - used_n):
-            self.scr.addstr(y + i, x, self.GAUGE_BLANK)
+            self.scr.insstr(y + i, x, self.GAUGE_BLANK)
 
-        now_y = self.scr.getyx()[0] + 1
+        now_y = y + self.height - used_n
         for i in range(used_n):
-            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.MEM_GAUGE_USED)
+            self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.MEM_GAUGE_USED)
 
 #--------------------
 # InfoTextLine
@@ -269,12 +268,30 @@ class InfoTextLine(object):
         self.system_status = system_status
 
     def draw(self, y, x, width):
-        self.scr.addstr(y, x, "Uptime ", self.color_theme.LABEL)
-        self.scr.addstr(str(self.system_status.uptime), self.color_theme.UPTIME)
-        self.scr.addstr(", Load average ", self.color_theme.LABEL)
-        self.scr.addstr("%.2f " % self.system_status.loadavg.avg1, self.color_theme.LOADAVG1)
-        self.scr.addstr("%.2f " % self.system_status.loadavg.avg5, self.color_theme.LOADAVG5)
-        self.scr.addstr("%.2f" % self.system_status.loadavg.avg15, self.color_theme.LOADAVG15)
+        uptime = str(self.system_status.uptime)
+        avg1 = "%.2f " % self.system_status.loadavg.avg1
+        avg5 = "%.2f " % self.system_status.loadavg.avg5
+        avg15 = "%.2f" % self.system_status.loadavg.avg15
+
+        max_x = x + width
+
+        now_x = x
+        now_x = self._insstr(y, now_x, "Uptime ", self.color_theme.LABEL, max_x)
+        now_x = self._insstr(y, now_x, uptime, self.color_theme.UPTIME, max_x)
+        now_x = self._insstr(y, now_x, ", Load average ", self.color_theme.LABEL, max_x)
+        now_x = self._insstr(y, now_x, avg1, self.color_theme.LOADAVG1, max_x)
+        now_x = self._insstr(y, now_x, avg5, self.color_theme.LOADAVG5, max_x)
+        now_x - self._insstr(y, now_x, avg15, self.color_theme.LOADAVG15, max_x)
+
+    def _insstr(self, y, x, text, option, max_x):
+        next_x = x + len(text)
+        if x >= max_x:
+            return next_x
+
+        self.scr.insstr(y, x, text, option)
+
+        return next_x
+
 
 #=======================================
 # Layout
