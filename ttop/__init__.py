@@ -1,5 +1,5 @@
 """
-ttop is CUI graphical system monitr.
+ttop is CLI graphical system monitr.
 """
 
 __author__ = "ton1517"

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-ttop is CUI graphical system monitor.
+ttop is CLI graphical system monitor.
 this tools is designed for use with tmux.
 https://github.com/ton1517/ttop
 

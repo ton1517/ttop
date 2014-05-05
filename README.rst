@@ -1,6 +1,6 @@
 ttop
 ==========
-ttop is CUI graphical system monitor.
+ttop is CLI graphical system monitor.
 this tools is designed for use with `tmux <http://tmux.sourceforge.net/>`_.
 
 .. image:: https://raw.github.com/wiki/ton1517/ttop/images/ttop.gif
