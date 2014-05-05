@@ -452,8 +452,8 @@ class HorizontalStackLayout(Layout):
 
 class VerticalStackLayout(Layout):
 
-    width = 25
-    height = None
+    WIDTH = 25
+    HEIGHT = None
 
     def _init(self):
         self.cpu = CPUHorizontalStackView(self.scr, self.color_theme, "CPU", self.system_status.cpu)
