@@ -175,35 +175,34 @@ class HorizontalStackView(object):
         self.color_theme = color_theme
         self.label = label
         self.resource = resource
-        self.height = 10
 
         self.resource_history = core.ResourceHistory(resource.__class__)
         self.resources = []
         self.text = ""
 
-    def draw(self, y, x, width):
+    def draw(self, y, x, width, height):
         llabel = self.label[:3].ljust(3)
-        self.scr.insstr(y + int(self.height / 2), x, llabel, self.color_theme.LABEL)
-        for i in range(self.height):
+        self.scr.insstr(y + int(height / 2), x, llabel, self.color_theme.LABEL)
+        for i in range(height):
             self.scr.insstr(y + i, x + len(llabel), self.GAUGE_LEFT, self.color_theme.FRAME)
 
         width_resource = width - 5
 
         self.resource_history.pack(width_resource)
         self.resource_history.push(self.resource, width_resource)
-        self._draw_resource(y, x + 4, width_resource)
+        self._draw_resource(y, x + 4, width_resource, height)
 
-        for i in range(self.height):
+        for i in range(height):
             self.scr.insstr(y + i, x + width - 1, self.GAUGE_LEFT, self.color_theme.FRAME)
 
     def _draw_text(self, y, x, text, max_width):
         self.scr.addnstr(y, x, text, max_width, self.color_theme.PERCENT)
 
-    def _draw_resource(self, y, x, width):
+    def _draw_resource(self, y, x, width, height):
         for i in range(width):
-            self._draw_gauge(y, x + i, self.resource_history.get(i))
+            self._draw_gauge(y, x + i, height, self.resource_history.get(i))
 
-    def _draw_gauge(self, y, x, resource):
+    def _draw_gauge(self, y, x, height, resource):
         pass
 
 #--------------------
@@ -213,19 +212,19 @@ class HorizontalStackView(object):
 
 class CPUHorizontalStackView(HorizontalStackView):
 
-    def _draw_resource(self, y, x, width):
-        super(CPUHorizontalStackView, self)._draw_resource(y, x, width)
+    def _draw_resource(self, y, x, width, height):
+        super(CPUHorizontalStackView, self)._draw_resource(y, x, width, height)
         per = str(self.resource.usedPercent)
         self._draw_text(y, x + width - len(per), per, width)
 
-    def _draw_gauge(self, y, x, resource):
-        user_n = int(resource.userPercent * self.height)
-        system_n = int(resource.systemPercent * self.height)
+    def _draw_gauge(self, y, x, height, resource):
+        user_n = int(resource.userPercent * height)
+        system_n = int(resource.systemPercent * height)
 
-        for i in range(self.height - (user_n + system_n)):
+        for i in range(height - (user_n + system_n)):
             self.scr.insstr(y + i, x, self.GAUGE_BLANK)
 
-        now_y = y + self.height - (user_n + system_n)
+        now_y = y + height - (user_n + system_n)
         for i in range(system_n):
             self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_SYSTEM)
 
@@ -240,18 +239,18 @@ class CPUHorizontalStackView(HorizontalStackView):
 
 class MemoryHorizontalStackView(HorizontalStackView):
 
-    def _draw_resource(self, y, x, width):
-        super(MemoryHorizontalStackView, self)._draw_resource(y, x, width)
+    def _draw_resource(self, y, x, width, height):
+        super(MemoryHorizontalStackView, self)._draw_resource(y, x, width, height)
         per = str(self.resource)
         self._draw_text(y, x + width - len(per), per, width)
 
-    def _draw_gauge(self, y, x, resource):
-        used_n = int(round(resource.percent * self.height))
+    def _draw_gauge(self, y, x, height, resource):
+        used_n = int(round(resource.percent * height))
 
-        for i in range(self.height - used_n):
+        for i in range(height - used_n):
             self.scr.insstr(y + i, x, self.GAUGE_BLANK)
 
-        now_y = y + self.height - used_n
+        now_y = y + height - used_n
         for i in range(used_n):
             self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.MEM_GAUGE_USED)
 
@@ -442,6 +441,6 @@ class HorizontalStackLayout(Layout):
 
     def _draw(self, width, height):
         center = int(width / 2)
-        self.cpu.draw(0, 0, center)
-        self.memory.draw(0, center, center)
-        self.textline.draw(self.cpu.height, 0, width)
+        self.cpu.draw(0, 0, center, height - 1)
+        self.memory.draw(0, center, center, height - 1)
+        self.textline.draw(height-1, 0, width)
