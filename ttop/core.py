@@ -220,14 +220,10 @@ class Updater(object):
         try:
             self.scr.erase()
             self.layout.draw()
-            self.scr.refresh()
-        except curses.error as e:
-            (h, w) = self.scr.getmaxyx()
-            (y, x) = self.scr.getyx()
-            if x == (w - 1) and y == (h - 1):
-                self.scr.refresh()
-            else:
-                raise e
+        except curses.error:
+            pass
+
+        self.scr.refresh()
 
 #--------------------
 # Arguments
