@@ -444,3 +444,23 @@ class HorizontalStackLayout(Layout):
         self.cpu.draw(0, 0, center, height - 1)
         self.memory.draw(0, center, center, height - 1)
         self.textline.draw(height-1, 0, width)
+
+#--------------------
+# VerticalStackLayout
+#--------------------
+
+
+class VerticalStackLayout(Layout):
+
+    width = 25
+    height = None
+
+    def _init(self):
+        self.cpu = CPUHorizontalStackView(self.scr, self.color_theme, "CPU", self.system_status.cpu)
+        self.memory = MemoryHorizontalStackView(self.scr, self.color_theme, "MEM", self.system_status.memory)
+
+    def _draw(self, width, height):
+        center = int(height / 2)
+        self.cpu.draw(0, 0, width, center)
+        self.memory.draw(center, 0, width, center)
+
