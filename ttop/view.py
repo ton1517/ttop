@@ -51,8 +51,8 @@ class HorizontalLineGauge(object):
 class CPUHorizontalLineGauge(HorizontalLineGauge):
 
     def _draw_resource(self, y, x, width):
-        user_n = int(round(self.resource.userPercent * width))
-        system_n = int(round(self.resource.systemPercent * width))
+        user_n = int(self.resource.userPercent * width)
+        system_n = int(self.resource.systemPercent * width)
 
 
         self.scr.insstr(y, x, self.GAUGE * user_n, self.color_theme.CPU_GAUGE_USER)
@@ -120,8 +120,8 @@ class VerticalLineGauge(object):
 class CPUVerticalLineGauge(VerticalLineGauge):
 
     def _draw_resource(self, y, x, height):
-        user_n = int(round(self.resource.userPercent * height))
-        system_n = int(round(self.resource.systemPercent * height))
+        user_n = int(self.resource.userPercent * height)
+        system_n = int(self.resource.systemPercent * height)
 
         for i in range(height - (user_n + system_n)):
             self.scr.insstr(y + i, x, self.GAUGE_BLANK)
@@ -219,8 +219,8 @@ class CPUHorizontalStackView(HorizontalStackView):
         self._draw_text(y, x + width - len(per), per, width)
 
     def _draw_gauge(self, y, x, resource):
-        user_n = int(round(resource.userPercent * self.height))
-        system_n = int(round(resource.systemPercent * self.height))
+        user_n = int(resource.userPercent * self.height)
+        system_n = int(resource.systemPercent * self.height)
 
         for i in range(self.height - (user_n + system_n)):
             self.scr.insstr(y + i, x, self.GAUGE_BLANK)
