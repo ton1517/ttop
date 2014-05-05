@@ -1,6 +1,15 @@
 CHANGES
 =======
 
+0.8.0 (2014-05-06)
+------------------
+
+- implements stack vertical view.
+- flexible stack.
+- delete empty line.
+- refactoring.
+- bug fixed : when CPU resource is 100%, raise error.
+
 0.7.2 (2014-02-06)
 ------------------
 
