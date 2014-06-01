@@ -7,13 +7,14 @@ this tools is designed for use with tmux.
 https://github.com/ton1517/ttop
 
 Usage:
-  ttop [--no-color] [--interval <s>] [--no-tmux] [normal | minimal | stack] [horizontal | vertical]
+  ttop [--color <theme>] [--no-color] [--interval <s>] [--no-tmux] [normal | minimal | stack] [horizontal | vertical]
   ttop -h | --help
   ttop -v | --version
 
 Options:
   -h --help           show help.
   -v --version        show version.
+  -c --color <theme>  change color thema. (mono, default)
   -C --no-color       use monocolor.
   -i --interval <s>   refresh interval(second) [default: 1.0].
   -T --no-tmux        don't use tmux mode.
@@ -30,6 +31,7 @@ from docopt import docopt
 
 from . import core
 from . import color
+from color import *
 from . import view
 from . import tmux
 
@@ -77,7 +79,16 @@ def new_pane_and_exec_process(arguments):
 
 def select_color_theme(arguments):
     color_table = color.ColorTable()
-    return color.MonoColorTheme(color_table) if arguments.no_color else color.DefaultColorTheme(color_table)
+    color_theme_name = "default"
+
+    if arguments.no_color:
+        color_theme_name = "mono"
+    elif arguments.color:
+        color_theme_name = arguments.color
+
+    theme_class_name = color_theme_name.capitalize() + "ColorTheme"
+    theme_class = globals().get(theme_class_name, DefaultColorTheme)
+    return theme_class(color_table)
 
 
 def select_layout_class(arguments):

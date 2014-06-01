@@ -233,6 +233,7 @@ class Updater(object):
 class Arguments(object):
 
     def __init__(self, arg):
+        self.color = arg["--color"]
         self.no_color = arg["--no-color"]
         self.interval = float(arg["--interval"])
         self.no_tmux = arg["--no-tmux"]
