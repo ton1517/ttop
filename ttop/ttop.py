@@ -14,7 +14,7 @@ Usage:
 Options:
   -h --help           show help.
   -v --version        show version.
-  -c --color <theme>  change color thema. (mono, default)
+  -c --color <theme>  change color thema. (theme: mono, default, bright)
   -C --no-color       use monocolor.
   -i --interval <s>   refresh interval(second) [default: 1.0].
   -T --no-tmux        don't use tmux mode.

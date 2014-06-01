@@ -91,3 +91,27 @@ class DefaultColorTheme(MonoColorTheme):
         self.LOADAVG1 = color.BBLACK
         self.LOADAVG5 = color.WHITE
         self.LOADAVG15 = color.BWHITE
+
+#--------------------
+# BrightColorTheme
+#--------------------
+
+
+class BrightColorTheme(MonoColorTheme):
+
+    def __init__(self, color):
+        MonoColorTheme.__init__(self, color)
+
+        self.PERCENT = color.BWHITE
+
+        self.CPU_GAUGE_USER = color.BGREEN
+        self.CPU_GAUGE_SYSTEM = color.BRED
+
+        self.MEM_GAUGE_USED = color.BGREEN
+
+        self.UPTIME = color.YELLOW
+        self.LOADAVG1 = color.BBLACK
+        self.LOADAVG5 = color.WHITE
+        self.LOADAVG15 = color.BWHITE
+
+        self.LABEL = color.WHITE
