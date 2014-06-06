@@ -1,4 +1,3 @@
-from hurry.filesize import size
 import psutil
 import copy
 import curses
@@ -41,8 +40,10 @@ class Percent(float):
 
 class Bytes(int):
 
+    MEGABYTE = 1024 * 1024
+
     def __str__(self):
-        return size(self.real)
+        return str(self.real/Bytes.MEGABYTE) + "M"
 
 #--------------------
 # CPU
