@@ -21,7 +21,6 @@ python library
 
 - docopt >= 0.6.1
 - psutil >= 1.0.1
-- uptime >= 3.0.0
 
 installation
 ------------
