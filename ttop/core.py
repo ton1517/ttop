@@ -109,7 +109,7 @@ class LoadAverage(object):
 #--------------------
 # Uptime
 #--------------------
-import uptime
+from datetime import datetime
 
 
 class Uptime(object):
@@ -121,13 +121,15 @@ class Uptime(object):
         self.minutes = 0
         self.seconds = 0
 
+        self.boot_time = datetime.fromtimestamp(psutil.boot_time() - 60)
+
     def update(self):
-        self.uptime = uptime.uptime()
-        up = self.uptime
-        self.days, up = int(up / 86400), up % 86400
-        self.hours, up = int(up / 3600), up % 3600
-        self.minutes, up = int(up / 60), up % 60
-        self.seconds = int(up)
+        delta = datetime.now() - self.boot_time
+        s = delta.seconds
+        self.days = delta.days
+        self.hours, s = int(s / 3600), s % 3600
+        self.minutes, s = int(s / 60), s % 60
+        self.seconds = int(s)
 
     def __str__(self):
         fill2 = lambda d: str(d).zfill(2)
