@@ -67,6 +67,7 @@ class MonoColorTheme(object):
         self.LOADAVG1 = color.DEFAULT
         self.LOADAVG5 = color.DEFAULT
         self.LOADAVG15 = color.DEFAULT
+        self.PROCS = color.DEFAULT
 
 #--------------------
 # DefaultColorTheme
@@ -91,6 +92,7 @@ class DefaultColorTheme(MonoColorTheme):
         self.LOADAVG1 = color.BBLACK
         self.LOADAVG5 = color.WHITE
         self.LOADAVG15 = color.BWHITE
+        self.PROCS = color.GREEN
 
 #--------------------
 # BrightColorTheme
@@ -113,5 +115,6 @@ class BrightColorTheme(MonoColorTheme):
         self.LOADAVG1 = color.BBLACK
         self.LOADAVG5 = color.WHITE
         self.LOADAVG15 = color.BWHITE
+        self.PROCS = color.YELLOW
 
         self.LABEL = color.WHITE

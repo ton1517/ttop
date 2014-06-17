@@ -141,6 +141,22 @@ class Uptime(object):
         return times
 
 #--------------------
+# Procs
+#--------------------
+
+
+class Procs(object):
+
+    def __init__(self):
+        self.procs = 0
+
+    def update(self):
+        self.procs = len(psutil.pids())
+
+    def __str__(self):
+        return str(self.procs)
+
+#--------------------
 # ResourceHistory
 #--------------------
 
@@ -185,6 +201,7 @@ class SystemStatus(object):
         self.swap = Memory()
         self.loadavg = LoadAverage()
         self.uptime = Uptime()
+        self.procs = Procs()
         self.update()
 
     def update(self):
@@ -200,6 +217,7 @@ class SystemStatus(object):
 
         self.loadavg.update()
         self.uptime.update()
+        self.procs.update()
 
     def __update_memory(self, mem, tuple_mem):
         mem.update(tuple_mem.total, tuple_mem.used)

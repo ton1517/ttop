@@ -271,6 +271,7 @@ class InfoTextLine(object):
         avg1 = "%.2f " % self.system_status.loadavg.avg1
         avg5 = "%.2f " % self.system_status.loadavg.avg5
         avg15 = "%.2f" % self.system_status.loadavg.avg15
+        procs = str(self.system_status.procs)
 
         max_x = x + width
 
@@ -280,7 +281,9 @@ class InfoTextLine(object):
         now_x = self._insstr(y, now_x, ", Load average ", self.color_theme.LABEL, max_x)
         now_x = self._insstr(y, now_x, avg1, self.color_theme.LOADAVG1, max_x)
         now_x = self._insstr(y, now_x, avg5, self.color_theme.LOADAVG5, max_x)
-        now_x - self._insstr(y, now_x, avg15, self.color_theme.LOADAVG15, max_x)
+        now_x = self._insstr(y, now_x, avg15, self.color_theme.LOADAVG15, max_x)
+        now_x = self._insstr(y, now_x, ", Processes ", self.color_theme.LABEL, max_x)
+        now_x = self._insstr(y, now_x, procs, self.color_theme.PROCS, max_x)
 
     def _insstr(self, y, x, text, option, max_x):
         next_x = x + len(text)
