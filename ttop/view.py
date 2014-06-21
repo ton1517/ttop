@@ -319,19 +319,14 @@ class MemoryHorizontalStackView(HorizontalStackView):
 #--------------------
 
 
-class InfoTextLine(object):
-
-    def __init__(self, scr, color_theme, system_status):
-        self.scr = scr
-        self.color_theme = color_theme
-        self.system_status = system_status
+class InfoTextLine(ViewBase):
 
     def draw(self, y, x, width):
-        uptime = str(self.system_status.uptime)
-        avg1 = "%.2f " % self.system_status.loadavg.avg1
-        avg5 = "%.2f " % self.system_status.loadavg.avg5
-        avg15 = "%.2f" % self.system_status.loadavg.avg15
-        procs = str(self.system_status.procs)
+        uptime = str(self.resource.uptime)
+        avg1 = "%.2f " % self.resource.loadavg.avg1
+        avg5 = "%.2f " % self.resource.loadavg.avg5
+        avg15 = "%.2f" % self.resource.loadavg.avg15
+        procs = str(self.resource.procs)
 
         max_x = x + width
 
