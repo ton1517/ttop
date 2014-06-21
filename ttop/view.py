@@ -108,18 +108,16 @@ class HorizontalLineGauge(ResourceView):
 
 class CPUHorizontalLineGauge(HorizontalLineGauge):
 
-    def _draw_resource(self, y, x, width):
-        user_n = int(self.resource.userPercent * width)
-        system_n = int(self.resource.systemPercent * width)
+    def _draw_resource(self, y, x, width, start_x, resource_width):
+        user_n = int(self.resource.userPercent * resource_width)
+        system_n = int(self.resource.systemPercent * resource_width)
 
+        self.scr.addstr(y, start_x, self.GAUGE * user_n, self.color_theme.CPU_GAUGE_USER)
+        self.scr.addstr(y, start_x + user_n, self.GAUGE * system_n, self.color_theme.CPU_GAUGE_SYSTEM)
+        self.scr.addstr(y, start_x + user_n + system_n, self.GAUGE_BLANK * (resource_width - (user_n + system_n)))
 
-        self.scr.insstr(y, x, self.GAUGE * user_n, self.color_theme.CPU_GAUGE_USER)
-        self.scr.insstr(y, x + user_n, self.GAUGE * system_n, self.color_theme.CPU_GAUGE_SYSTEM)
-        self.scr.insstr(y, x + user_n + system_n, self.GAUGE_BLANK * (width - (user_n + system_n)))
-
-        per = str(self.resource.usedPercent)
-        start_x = x + width - len(per)
-        self.scr.addstr(y, start_x, per, self.color_theme.PERCENT)
+    def _get_info_str(self):
+        return str(self.resource.usedPercent)
 
 #--------------------
 # MemoryHorizontalLineGauge
