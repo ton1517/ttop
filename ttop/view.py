@@ -301,10 +301,8 @@ class CPUHorizontalStackView(HorizontalStackView):
 
 class MemoryHorizontalStackView(HorizontalStackView):
 
-    def _draw_resource(self, y, x, width, height):
-        super(MemoryHorizontalStackView, self)._draw_resource(y, x, width, height)
-        per = str(self.resource)
-        self._draw_text(y, x + width - len(per), per, width)
+    def _get_info_str(self):
+        return str(self.resource)
 
     def _draw_gauge(self, y, x, height, resource):
         used_n = int(round(resource.percent * height))
