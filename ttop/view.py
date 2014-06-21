@@ -126,15 +126,13 @@ class CPUHorizontalLineGauge(HorizontalLineGauge):
 
 class MemoryHorizontalLineGauge(HorizontalLineGauge):
 
-    def _draw_resource(self, y, x, width):
-        used_n = int(round(self.resource.percent * width))
+    def _draw_resource(self, y, x, width, start_x, resource_width):
+        used_n = int(round(self.resource.percent * resource_width))
+        self.scr.addstr(y, start_x, self.GAUGE * used_n, self.color_theme.MEM_GAUGE_USED)
+        self.scr.addstr(y, start_x + used_n, self.GAUGE_BLANK * (resource_width - used_n))
 
-        self.scr.insstr(y, x, self.GAUGE * used_n, self.color_theme.MEM_GAUGE_USED)
-        self.scr.insstr(y, x + used_n, self.GAUGE_BLANK * (width - used_n))
-
-        text = str(self.resource)
-        start_x = x + width - len(text)
-        self.scr.addstr(y, start_x, text, self.color_theme.PERCENT)
+    def _get_info_str(self):
+        return str(self.resource)
 
 #--------------------
 # VerticalLineGauge
