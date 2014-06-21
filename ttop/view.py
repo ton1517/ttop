@@ -220,7 +220,7 @@ class MemoryVerticalLineGauge(VerticalLineGauge):
 #--------------------
 
 
-class HorizontalStackView(object):
+class HorizontalStackView(ResourceView):
 
     GAUGE_LEFT = "|"
     GAUGE_RIGHT = "|"
@@ -228,37 +228,43 @@ class HorizontalStackView(object):
     GAUGE = "|"
     GAUGE_BLANK = " "
 
+    LABEL_WIDTH = 3
+
     def __init__(self, scr, color_theme, label, resource):
-        self.scr = scr
-        self.color_theme = color_theme
-        self.label = label
-        self.resource = resource
+        ResourceView.__init__(self, scr, color_theme, label, resource)
 
         self.resource_history = core.ResourceHistory(resource.__class__)
         self.resources = []
-        self.text = ""
 
-    def draw(self, y, x, width, height):
-        llabel = self.label[:3].ljust(3)
-        self.scr.insstr(y + int(height / 2), x, llabel, self.color_theme.LABEL)
+    def _draw_label(self, y, x, length):
+        height = length[1]
+        llabel = self.label[:self.LABEL_WIDTH].ljust(self.LABEL_WIDTH)
+        self.scr.addstr(y + int(height / 2), x, llabel, self.color_theme.LABEL)
+
+    def _draw_frame(self, y, x, length):
+        width, height = length
         for i in range(height):
-            self.scr.insstr(y + i, x + len(llabel), self.GAUGE_LEFT, self.color_theme.FRAME)
+            self.scr.addstr(y + i, x + self.LABEL_WIDTH, self.GAUGE_LEFT, self.color_theme.FRAME)
+            self.scr.addstr(y + i, x + width - 1, self.GAUGE_RIGHT, self.color_theme.FRAME)
 
-        width_resource = width - 5
+    def _calc_resource_area(self, y, x, length):
+        width, height = length
+        return x + 4, (width - 5, height)
 
-        self.resource_history.pack(width_resource)
-        self.resource_history.push(self.resource, width_resource)
-        self._draw_resource(y, x + 4, width_resource, height)
+    def _draw_resource(self, y, x, length, start_x, resource_length):
+        resource_width, resource_height = resource_length
+        self.resource_history.pack(resource_width)
+        self.resource_history.push(self.resource, resource_width)
 
-        for i in range(height):
-            self.scr.insstr(y + i, x + width - 1, self.GAUGE_LEFT, self.color_theme.FRAME)
+        for i in range(resource_width):
+            self._draw_gauge(y, start_x + i, resource_height, self.resource_history.get(i))
 
-    def _draw_text(self, y, x, text, max_width):
-        self.scr.addnstr(y, x, text, max_width, self.color_theme.PERCENT)
+    def _get_info_str(self):
+        pass
 
-    def _draw_resource(self, y, x, width, height):
-        for i in range(width):
-            self._draw_gauge(y, x + i, height, self.resource_history.get(i))
+    def _draw_info(self, y, x, length, info_str):
+        width = length[0]
+        self.scr.addnstr(y, x + width - len(info_str) - 1, info_str, width, self.color_theme.PERCENT)
 
     def _draw_gauge(self, y, x, height, resource):
         pass
