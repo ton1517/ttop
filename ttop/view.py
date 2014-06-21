@@ -520,4 +520,4 @@ class VerticalStackLayout(Layout):
     def _draw(self, width, height):
         center = int(height / 2)
         self.cpu.draw(0, 0, (width, center))
-        self.memory.draw(center, 0, (width, center))
+        self.memory.draw(center, 0, (width, height - center))
