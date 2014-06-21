@@ -43,7 +43,7 @@ class Bytes(int):
     MEGABYTE = 1024 * 1024
 
     def __str__(self):
-        return str(self.real/Bytes.MEGABYTE) + "M"
+        return str(int(self.real/Bytes.MEGABYTE)) + "M"
 
 #--------------------
 # CPU
