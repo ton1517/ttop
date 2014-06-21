@@ -7,6 +7,59 @@ from . import core
 #=======================================
 
 #--------------------
+# ViewBase
+#--------------------
+
+
+class ViewBase(object):
+
+    def __init__(self, scr, color_theme, resource):
+        self.scr = scr
+        self.color_theme = color_theme
+        self.resource = resource
+
+    def draw(self, y, x, length):
+        pass
+
+#--------------------
+# ResourceView
+#--------------------
+
+
+class ResourceView(ViewBase):
+
+    def __init__(self, scr, color_theme, label, resource):
+        ViewBase.__init__(self, scr, color_theme, resource)
+        self.label = label
+
+    def draw(self, y, x, length):
+        self._draw_label(y, x, length)
+        self._draw_frame(y, x, length)
+
+        start_position, resource_length = self._calc_resource_area(y, x, length)
+        self._draw_resource(y, x, length, start_position, resource_length)
+
+        self._draw_info(y, x, length, self._get_info_str())
+
+    def _draw_label(self, y, x, length):
+        pass
+
+    def _draw_frame(self, y, x, length):
+        pass
+
+    def _calc_resource_area(self, y, x, length):
+        pass
+
+    def _draw_resource(self, y, x, length, start_position, resource_length):
+        pass
+
+    def _get_info_str(self):
+        pass
+
+    def _draw_info(self, y, x, length, info_str):
+        pass
+
+#--------------------
 # HorizontalLineGauge
 #--------------------
 
