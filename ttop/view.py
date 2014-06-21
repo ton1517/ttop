@@ -177,14 +177,14 @@ class VerticalLineGauge(ResourceView):
 
 class CPUVerticalLineGauge(VerticalLineGauge):
 
-    def _draw_resource(self, y, x, height):
-        user_n = int(self.resource.userPercent * height)
-        system_n = int(self.resource.systemPercent * height)
+    def _draw_resource(self, y, x, height, start_y, resource_height):
+        user_n = int(self.resource.userPercent * resource_height)
+        system_n = int(self.resource.systemPercent * resource_height)
 
-        for i in range(height - (user_n + system_n)):
-            self.scr.insstr(y + i, x, self.GAUGE_BLANK)
+        for i in range(resource_height - (user_n + system_n)):
+            self.scr.insstr(start_y + i, x, self.GAUGE_BLANK)
 
-        now_y = y + height - (user_n + system_n)
+        now_y = start_y + resource_height - (user_n + system_n)
         for i in range(system_n):
             self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_SYSTEM)
 
@@ -192,8 +192,8 @@ class CPUVerticalLineGauge(VerticalLineGauge):
         for i in range(user_n):
             self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_USER)
 
-        per = str(self.resource.usedPercent)[:self.width].rjust(self.width)
-        self.scr.addstr(y, x, per, self.color_theme.PERCENT)
+    def _get_info_str(self):
+        return str(self.resource.usedPercent)
 
 #--------------------
 # MemoryVerticalLineGauge
@@ -452,7 +452,7 @@ class VerticalMinimalLayout(Layout):
 
     def _draw(self, width, height):
         self.cpu.draw(0, 0, height)
-        self.memory.draw(0, self.cpu.width, height)
+        self.memory.draw(0, self.cpu.WIDTH, height)
 
 #--------------------
 # VerticalDefaultLayout
@@ -471,7 +471,7 @@ class VerticalDefaultLayout(Layout):
         self.swap = MemoryVerticalLineGauge(self.scr, self.color_theme, "SWP", self.system_status.swap)
 
     def _draw(self, width, height):
-        gauge_w = self.cpu.width
+        gauge_w = self.cpu.WIDTH
         center = int(height / 2)
 
         self.cpu.draw(0, 0, height)
