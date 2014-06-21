@@ -19,8 +19,9 @@ Options:
   -i --interval <s>   refresh interval(second) [default: 1.0].
   -T --no-tmux        don't use tmux mode.
 """
+from __future__ import absolute_import
 
-from . import __version__
+from ttop import __version__
 
 import sys
 import curses
@@ -29,11 +30,8 @@ import time
 
 from docopt import docopt
 
-from . import core
-from . import color
-from color import *
-from . import view
-from . import tmux
+from ttop import core, color, view, tmux
+from ttop.color import *
 
 #=======================================
 # Config
