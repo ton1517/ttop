@@ -139,32 +139,36 @@ class MemoryHorizontalLineGauge(HorizontalLineGauge):
 #--------------------
 
 
-class VerticalLineGauge(object):
+class VerticalLineGauge(ResourceView):
 
     GAUGE_TOP = "|~|"
     GAUGE_BOTTOM = "|_|"
     GAUGE = "|=|"
     GAUGE_BLANK = "   "
 
-    def __init__(self, scr, color_theme, label, resource):
-        self.scr = scr
-        self.color_theme = color_theme
-        self.label = label
-        self.resource = resource
-        self.width = 3
+    WIDTH = 3
 
-    def draw(self, y, x, height):
-        llabel = self.label[:self.width].center(self.width)
+    def _draw_label(self, y, x, height):
+        llabel = self.label[:self.WIDTH].center(self.WIDTH)
         self.scr.insstr(y, x, llabel, self.color_theme.LABEL)
+
+    def _draw_frame(self, y, x, height):
         self.scr.insstr(y + 1, x, self.GAUGE_TOP, self.color_theme.FRAME)
-
-        height_resource = height - 3
-        self._draw_resource(y + 2, x, height_resource)
-
         self.scr.insstr(y + height - 1, x, self.GAUGE_BOTTOM, self.color_theme.FRAME)
 
-    def _draw_resource(self, y, x, height):
+    def _calc_resource_area(self, y, x, height):
+        # y + GAUGE_TOP_HEIGHT (1) + LABEL_HEIGHT (1), height - GAUGE_TOP_HEIGHT (1) - GAUGE_BOTTOM_HEIGHT (1) - LABEL_HEIGHT (1)
+        return y + 2, height - 3
+
+    def _draw_resource(self, y, x, height, start_y, resource_height):
         pass
+
+    def _get_info_str(self):
+        pass
+
+    def _draw_info(self, y, x, height, info_str):
+        per = info_str[:self.WIDTH].rjust(self.WIDTH)
+        self.scr.addstr(y + 2, x, per, self.color_theme.PERCENT)
 
 #--------------------
 # CPUVerticalLineGauge
