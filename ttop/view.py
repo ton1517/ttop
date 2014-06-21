@@ -499,9 +499,9 @@ class HorizontalStackLayout(Layout):
 
     def _draw(self, width, height):
         center = int(width / 2)
-        self.cpu.draw(0, 0, center, height - 1)
-        self.memory.draw(0, center, center, height - 1)
-        self.textline.draw(height-1, 0, width)
+        self.cpu.draw(0, 0, (center, height - 1))
+        self.memory.draw(0, center, (center, height - 1))
+        self.textline.draw(height - 1, 0, width)
 
 #--------------------
 # VerticalStackLayout
@@ -519,6 +519,5 @@ class VerticalStackLayout(Layout):
 
     def _draw(self, width, height):
         center = int(height / 2)
-        self.cpu.draw(0, 0, width, center)
-        self.memory.draw(center, 0, width, center)
-
+        self.cpu.draw(0, 0, (width, center))
+        self.memory.draw(center, 0, (width, center))
