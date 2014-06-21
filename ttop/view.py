@@ -64,7 +64,7 @@ class ResourceView(ViewBase):
 #--------------------
 
 
-class HorizontalLineGauge(object):
+class HorizontalLineGauge(ResourceView):
 
     """horizontal 1 line gauge.
     example:
@@ -76,25 +76,30 @@ class HorizontalLineGauge(object):
     GAUGE = "|"
     GAUGE_BLANK = " "
 
-    def __init__(self, scr, color_theme, label, resource):
-        self.scr = scr
-        self.color_theme = color_theme
-        self.label = label
-        self.resource = resource
+    LABEL_WIDTH = 3
 
-    def draw(self, y, x, width):
-        llabel = self.label.ljust(3)
-        self.scr.insstr(y, x, llabel, self.color_theme.LABEL)
-        self.scr.insstr(y, x + len(llabel), self.GAUGE_LEFT, self.color_theme.FRAME)
+    def _draw_label(self, y, x, width):
+        llabel = self.label.ljust(self.LABEL_WIDTH)
+        self.scr.addstr(y, x, llabel, self.color_theme.LABEL)
 
-        now_x = x + len(llabel) + len(self.GAUGE_LEFT)
-        width_resource = width - (now_x - x) - (len(self.GAUGE_RIGHT))
-        self._draw_resource(y, now_x, width_resource)
+    def _draw_frame(self, y, x, width):
+        self.scr.addstr(y, x + self.LABEL_WIDTH, self.GAUGE_LEFT, self.color_theme.FRAME)
+        self.scr.addstr(y, x + width - len(self.GAUGE_RIGHT), self.GAUGE_RIGHT, self.color_theme.FRAME)
 
-        self.scr.insstr(y, now_x + width_resource, self.GAUGE_RIGHT, self.color_theme.FRAME)
+    def _calc_resource_area(self, y, x, width):
+        now_x = x + self.LABEL_WIDTH + len(self.GAUGE_LEFT)
+        resource_width = width - (now_x - x) - (len(self.GAUGE_RIGHT))
+        return now_x, resource_width
 
-    def _draw_resource(self, y, x, width):
+    def _draw_resource(self, y, x, width, start_x, resource_width):
         pass
+
+    def _get_info_str(self):
+        pass
+
+    def _draw_info(self, y, x, width, info_str):
+        start_x = x + width - len(self.GAUGE_RIGHT) - len(info_str)
+        self.scr.addstr(y, start_x, info_str, self.color_theme.PERCENT)
 
 #--------------------
 # CPUHorizontalLineGauge
