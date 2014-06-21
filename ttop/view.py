@@ -202,18 +202,18 @@ class CPUVerticalLineGauge(VerticalLineGauge):
 
 class MemoryVerticalLineGauge(VerticalLineGauge):
 
-    def _draw_resource(self, y, x, height):
-        used_n = int(round(self.resource.percent * height))
+    def _draw_resource(self, y, x, height, start_y, resource_height):
+        used_n = int(round(self.resource.percent * resource_height))
 
-        for i in range(height - used_n):
-            self.scr.insstr(y + i, x, self.GAUGE_BLANK)
+        for i in range(resource_height - used_n):
+            self.scr.insstr(start_y + i, x, self.GAUGE_BLANK)
 
-        now_y = y + height - used_n
+        now_y = start_y + resource_height - used_n
         for i in range(used_n):
             self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.MEM_GAUGE_USED)
 
-        per = str(self.resource.percent)[:self.width].rjust(self.width)
-        self.scr.insstr(y, x, per, self.color_theme.PERCENT)
+    def _get_info_str(self):
+        return str(self.resource.percent)
 
 #--------------------
 # HorizontalStackView
