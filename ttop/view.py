@@ -276,25 +276,23 @@ class HorizontalStackView(ResourceView):
 
 class CPUHorizontalStackView(HorizontalStackView):
 
-    def _draw_resource(self, y, x, width, height):
-        super(CPUHorizontalStackView, self)._draw_resource(y, x, width, height)
-        per = str(self.resource.usedPercent)
-        self._draw_text(y, x + width - len(per), per, width)
+    def _get_info_str(self):
+        return str(self.resource.usedPercent)
 
     def _draw_gauge(self, y, x, height, resource):
         user_n = int(resource.userPercent * height)
         system_n = int(resource.systemPercent * height)
 
         for i in range(height - (user_n + system_n)):
-            self.scr.insstr(y + i, x, self.GAUGE_BLANK)
+            self.scr.addstr(y + i, x, self.GAUGE_BLANK)
 
         now_y = y + height - (user_n + system_n)
         for i in range(system_n):
-            self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_SYSTEM)
+            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_SYSTEM)
 
         now_y += system_n
         for i in range(user_n):
-            self.scr.insstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_USER)
+            self.scr.addstr(now_y + i, x, self.GAUGE, self.color_theme.CPU_GAUGE_USER)
 
 #--------------------
 # MemoryHorizontalStackView
