@@ -1,6 +1,18 @@
 CHANGES
 =======
 
+0.9.0 (2014-06-23)
+------------------
+
+- add color option.
+- add bright color theme.
+- show process nums.
+- show memory as MB.
+- graph color overwrite existing percent color.
+- remove modules. (hurry.filesize and uptime)
+- bugfix.
+- refactoring.
+
 0.8.0 (2014-05-06)
 ------------------
 
