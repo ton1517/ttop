@@ -1,5 +1,5 @@
 """
-ttop is CLI graphical system monitr.
+ttop is CLI graphical system monitor.
 """
 
 __author__ = "ton1517"
