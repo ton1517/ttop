@@ -13,6 +13,9 @@ from . import core
 
 class ViewBase(object):
 
+    # The bottom 8 bits are the character proper, and upper bits are the attributes in curses.
+    _STRIP_STR_BIT = int('11100000000', 2)
+
     def __init__(self, scr, color_theme, resource):
         self.scr = scr
         self.color_theme = color_theme
@@ -24,6 +27,17 @@ class ViewBase(object):
     def addstr(self, y, x, str, attr=0):
         try:
             self.scr.addstr(y, x, str, attr)
+        except curses.error:
+            pass
+
+    def addstr_with_existing_attr(self, y, x, str, attr=0):
+        try:
+            for i, s in enumerate(str):
+                at = self.scr.inch(y, x + i) & ViewBase._STRIP_STR_BIT
+                at = at or attr
+
+                self.scr.addch(y, x + i, s, at)
+
         except curses.error:
             pass
 
