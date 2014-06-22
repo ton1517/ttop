@@ -119,7 +119,7 @@ class HorizontalLineGauge(ResourceView):
 
     def _draw_info(self, y, x, width, info_str):
         start_x = x + width - len(self.GAUGE_RIGHT) - len(info_str)
-        self.addstr(y, start_x, info_str, self.color_theme.PERCENT)
+        self.addstr_with_existing_attr(y, start_x, info_str, self.color_theme.PERCENT)
 
 #--------------------
 # CPUHorizontalLineGauge
@@ -188,7 +188,7 @@ class VerticalLineGauge(ResourceView):
 
     def _draw_info(self, y, x, height, info_str):
         per = info_str[:self.WIDTH].rjust(self.WIDTH)
-        self.addstr(y + 2, x, per, self.color_theme.PERCENT)
+        self.addstr_with_existing_attr(y + 2, x, per, self.color_theme.PERCENT)
 
 #--------------------
 # CPUVerticalLineGauge
@@ -284,7 +284,7 @@ class HorizontalStackView(ResourceView):
 
     def _draw_info(self, y, x, length, info_str):
         width = length[0]
-        self.addstr(y, x + width - len(info_str) - 1, info_str, self.color_theme.PERCENT)
+        self.addstr_with_existing_attr(y, x + width - len(info_str) - 1, info_str, self.color_theme.PERCENT)
 
     def _draw_gauge(self, y, x, height, resource):
         pass
