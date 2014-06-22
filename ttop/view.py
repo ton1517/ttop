@@ -429,11 +429,11 @@ class HorizontalMinimalLayout(Layout):
 class HorizontalDefaultLayout(Layout):
 
     WIDTH = None
-    HEIGHT = 4 + int((1 + core.CPU.NUM_CPUS) / 2)
+    HEIGHT = 4 + int((1 + core.CPU.NUM_CPUS) / 2) - int(not bool(core.CPU.NUM_CPUS - 1)) # int(not bool(core.CPU.NUM_CPUS - 1)) means 1 if NUM_CPUS == 1 else 0
 
     def _init(self):
         self.cpu = CPUHorizontalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
-        self.each_cpu = [CPUHorizontalLineGauge(self.scr, self.color_theme, str(i + 1), cpu) for i, cpu in enumerate(self.system_status.each_cpu)]
+        self.each_cpu = [CPUHorizontalLineGauge(self.scr, self.color_theme, str(i + 1), cpu) for i, cpu in enumerate(self.system_status.each_cpu)] if core.CPU.NUM_CPUS > 1 else []
         self.memory = MemoryHorizontalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
         self.swap = MemoryHorizontalLineGauge(self.scr, self.color_theme, "SWP", self.system_status.swap)
         self.textline = InfoTextLine(self.scr, self.color_theme, self.system_status)
@@ -478,12 +478,12 @@ class VerticalMinimalLayout(Layout):
 
 class VerticalDefaultLayout(Layout):
 
-    WIDTH = 9 + 3 * int((1 + core.CPU.NUM_CPUS) / 2)
+    WIDTH = 9 + 3 * (int((1 + core.CPU.NUM_CPUS) / 2) - int(not bool(core.CPU.NUM_CPUS - 1))) # int(not bool(core.CPU.NUM_CPUS - 1)) means 1 if NUM_CPUS == 1 else 0
     HEIGHT = None
 
     def _init(self):
         self.cpu = CPUVerticalLineGauge(self.scr, self.color_theme, "CPU", self.system_status.cpu)
-        self.each_cpu = [CPUVerticalLineGauge(self.scr, self.color_theme, str(i + 1), cpu) for i, cpu in enumerate(self.system_status.each_cpu)]
+        self.each_cpu = [CPUVerticalLineGauge(self.scr, self.color_theme, str(i + 1), cpu) for i, cpu in enumerate(self.system_status.each_cpu)] if core.CPU.NUM_CPUS > 1 else []
         self.memory = MemoryVerticalLineGauge(self.scr, self.color_theme, "MEM", self.system_status.memory)
         self.swap = MemoryVerticalLineGauge(self.scr, self.color_theme, "SWP", self.system_status.swap)
 
