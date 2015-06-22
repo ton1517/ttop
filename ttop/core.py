@@ -52,7 +52,7 @@ class Bytes(int):
 
 class CPU(object):
 
-    NUM_CPUS = psutil.NUM_CPUS
+    NUM_CPUS = psutil.cpu_count()
 
     def __init__(self, user=0, system=0, idle=0):
         self.update(user, system, idle)
